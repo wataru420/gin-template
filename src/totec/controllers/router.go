@@ -2,19 +2,34 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"octo/service"
+	"totec/service"
 )
 
-func InitRooter(e *gin.Engine) {
-	e.GET("/status", func(c *gin.Context) {
-		c.String(http.StatusOK, "ok")
-	})
+var userService = &service.UserService{}
 
-	v1 := e.Group("/v1")
+func InitRooter(e *gin.Engine) {
+	e.GET("/status", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
+
+	json := e.Group("/json")
 	{
-		v1.GET("upload", auth(), service.Upload)
-		v1.GET("list/:version/:revision", auth(), service.ListEndpoint)
+		json.GET("user/detail/:id", auth(), userService.GetEndpoint)
+		json.GET("user/list", auth(), userService.ListEndpoint)
 	}
+
+	web := e.Group("/web")
+	{
+		web.GET("user/detail/:id", auth(), userService.GetWebEndpoint)
+		web.GET("user/list", auth(), userService.ListEndpoint)
+	}
+
+	// However, this one will match /user/john/ and also /user/john/send
+	// If no other routers match /user/john, it will redirect to /user/join/
+	e.GET("/user/:name/*action", func(c *gin.Context) {
+		name := c.Param("name")
+		action := c.Param("action")
+		message := name + " is " + action
+		c.String(http.StatusOK, message)
+	})
 
 }
 

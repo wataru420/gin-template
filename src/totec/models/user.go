@@ -1,49 +1,52 @@
 package models
 import (
 	"log"
-	"database/sql"
+	"encoding/json"
+	"strconv"
+	"github.com/garyburd/redigo/redis"
 )
 
-type File struct {
+type User struct {
 	Id     		int
-	AppId     	int
-	VersionId 	int
-	RevisionId	int
-	Filename  	string
-	Url		  	string
-	Size	  	int
-	Crc		  	uint32
-	Tag       	sql.NullString
-	Priority  	int
-	State	  	int
+	Name	  	string
+	Password  	string
+	Type	  	int
 }
 
-type FileDao struct {
+type UserDao struct {
 }
 
-func (*FileDao) GetList(appId int, versionId int, revisionId int) ([]File, error) {
-	var res = []File{}
-	rows, err := dbs.Query(`SELECT id,revision_id,filename,url,size,crc,tag,priority,state
-								FROM files where app_id=? and version_id=? and revision_id > ? `, appId, versionId, revisionId)
+func (*UserDao) GetList() ([]User, error) {
+	var res = []User{}
+	rows, err := dbs.Query(`SELECT id,name,password,type FROM users`)
 	if err != nil {
 		return res, err
 	}
 
 	for rows.Next() {
-		file := File{AppId:appId,VersionId:versionId}
-		if err := rows.Scan(&file.Id,&file.RevisionId,&file.Filename,&file.Url,&file.Size,&file.Crc,&file.Tag,&file.Priority,&file.State); err != nil {
+		user := User{}
+		if err := rows.Scan(&user.Id,&user.Name,&user.Password,&user.Type); err != nil {
 			log.Fatal(err)
 			return res, err
 		}
-		res = append(res, file)
+		res = append(res, user)
 	}
-
 	return res, err
-
 }
 
-func (*FileDao) GetMaxRevisionId(appId int, versionId int) (int, error) {
-	res := 0
-	err := dbs.QueryRow(`SELECT max(revision_id) FROM files WHERE app_id=? and version_id=?`, appId, versionId).Scan(&res)
+func (*UserDao) Get(id int) (User, error) {
+	res := User{Id:id}
+	con := redisPool.Get()
+	defer con.Close()
+
+	s, err := redis.Bytes(con.Do("GET", strconv.Itoa(id)))
+	if s != nil {
+		json.Unmarshal(s, &res)
+		return res, err
+	}
+
+	err = dbs.QueryRow(`SELECT name,password,type FROM users WHERE id=?`, id).Scan(&res.Name,&res.Password,&res.Type)
+	serialized, _ := json.Marshal(res)
+	con.Do("SET", strconv.Itoa(id),serialized)
 	return res, err
 }
