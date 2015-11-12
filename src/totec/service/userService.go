@@ -49,6 +49,7 @@ func (*UserService) GetWebEndpoint(c *gin.Context)  {
 		"user": user,
 	})
 }
+
 func (*UserService) ListEndpoint(c *gin.Context) {
 	type res struct {
 		Id int `json:"id"`
@@ -71,3 +72,28 @@ func (*UserService) ListEndpoint(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resList)
 }
+
+func (*UserService) ListWebEndpoint(c *gin.Context) {
+	type res struct {
+		Id int `json:"id"`
+		Name string `json:"name"`
+		Type int `json:"type"`
+	}
+
+	resList := []res{}
+
+	userList, err := userDao.GetList()
+	if err != nil {
+		log.Fatal("error")
+		c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	for _, user := range userList {
+		r := res{Id:user.Id,Name:user.Name,Type:user.Type}
+		resList = append(resList, r)
+	}
+
+	c.HTML(http.StatusOK, "userList.tmpl", gin.H{
+		"title": "Main website",
+		"userList": resList,
+	})}

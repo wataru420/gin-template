@@ -19,7 +19,7 @@ func InitRooter(e *gin.Engine) {
 	web := e.Group("/web")
 	{
 		web.GET("user/detail/:id", auth(), userService.GetWebEndpoint)
-		web.GET("user/list", auth(), userService.ListEndpoint)
+		web.GET("user/list", auth(), userService.ListWebEndpoint)
 	}
 
 	// However, this one will match /user/john/ and also /user/john/send
