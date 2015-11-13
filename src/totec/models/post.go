@@ -18,6 +18,8 @@ type Post struct {
 type PostDao struct {
 }
 
+var allPostColums = "id,date_time,user_id,item_id,score,state,like_users,tags"
+
 func (*PostDao) Get(id string) (Post, error) {
 	res := Post{Id:id}
 	con := redisPool.Get()
@@ -29,7 +31,7 @@ func (*PostDao) Get(id string) (Post, error) {
 		return res, err
 	}
 
-	err = dbs.QueryRow(`SELECT id,date_time,user_id,item_id,score,state,like_users,tags FROM items WHERE id=?`, id).Scan(
+	err = dbs.QueryRow(`SELECT ` + allPostColums + ` FROM posts WHERE id=?`, id).Scan(
 						&res.Id,&res.DateTime,&res.UserId,&res.ItemId,&res.ItemScore,&res.ItemState,&res.LikeUsers,&res.Tags)
 	serialized, _ := json.Marshal(res)
 	con.Do("SET", "item" + id,serialized)
