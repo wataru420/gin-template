@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 	"totec/models"
 
 	"github.com/gin-gonic/gin"
@@ -72,6 +73,7 @@ func (*PostService) GetWebEndpoint(c *gin.Context) {
 		"post":          post,
 		"item":          item,
 		"user":          user,
+		"postTime":      time.Unix(int64(post.DateTime), 0).Format("2006年1月2日 15:4"),
 		"likeUserCount": len(likeUsers),
 		"likeUsers":     likeUsers[0:3],
 		"postImages":    postItems,
