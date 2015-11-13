@@ -4,6 +4,8 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 	"log"
+	"strings"
+	"strconv"
 )
 
 type User struct {
@@ -74,32 +76,64 @@ func (*UserDao) FindByPostItemId(id string, limit int) ([]User, error) {
 func (*UserDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
 	var res = []User{}
 
-	var query = "SELECT " + allUserColums + " FROM users WHERE "
+	var query = "SELECT " + allUserColums + " FROM users WHERE 1=1"
 
 	findByUserId := c.Query("findByUserId")
 	if findByUserId != "" {
-		query += " id = '" + findByUserId + "'"
+		query += " and id = '" + findByUserId + "'"
 	}
 
 	findByUserPublicScoreGTE := c.Query("findByUserPublicScoreGTE")
 	if findByUserPublicScoreGTE != "" {
-		query += " public_score >= " + findByUserPublicScoreGTE
+		query += " and public_score >= " + findByUserPublicScoreGTE
 	}
 
 	findByUserPublicScoreLTE := c.Query("findByUserPublicScoreLTE")
 	if findByUserPublicScoreLTE != "" {
-		query += " public_score <= " + findByUserPublicScoreLTE
+		query += " and public_score <= " + findByUserPublicScoreLTE
 	}
 
 	findByUserFriendsNumberGTE := c.Query("findByUserFriendsNumberGTE")
 	if findByUserFriendsNumberGTE != "" {
-		query += " friend_num >=" + findByUserFriendsNumberGTE
+		query += " and friend_num >=" + findByUserFriendsNumberGTE
 	}
 
 	findByUserFriendsNumberLTE := c.Query("findByUserFriendsNumberLTE")
 	if findByUserFriendsNumberLTE != "" {
-		query += " friend_num <=" + findByUserFriendsNumberLTE
+		query += " and friend_num <=" + findByUserFriendsNumberLTE
 	}
+
+	findByUserFriendsIncludeUserIds := c.Query("findByUserFriendsIncludeUserIds")
+	if findByUserFriendsIncludeUserIds != "" {
+		query += `
+	     and id IN (
+    	SELECT friend_id
+    	FROM friend_relations
+    	WHERE id IN ("` + strings.Join(strings.Split(findByUserFriendsIncludeUserIds,","),`","`) + `")
+    	GROUP BY friend_id
+   		HAVING COUNT(friend_id) >=
+		` + strconv.Itoa(len(strings.Split(findByUserFriendsIncludeUserIds,","))) + ")"
+	}
+
+	findByUserFriendsNotIncludeUserIds := c.Query("findByUserFriendsNotIncludeUserIds")
+	if findByUserFriendsNotIncludeUserIds != "" {
+		query += `
+	     and id NOT IN (
+    	SELECT friend_id
+    	FROM friend_relations
+    	WHERE id IN ("` + strings.Join(strings.Split(findByUserFriendsNotIncludeUserIds,","),`","`) + `")
+    	GROUP BY friend_id
+   		HAVING COUNT(friend_id) >=
+		` + strconv.Itoa(len(strings.Split(findByUserFriendsNotIncludeUserIds,","))) + ")"
+	}
+
+	var query2 = " and id IN (SELECT user_id FROM posts WHERE 1=1 "
+	findByPostId := c.Query("findByPostId")
+	if findByPostId != "" {
+		query += query2 + `posts.id="` + findByPostId + `"`
+	}
+
+	query += createScenario2Query(c)
 
 	query += " limit " + limit
 
@@ -117,4 +151,85 @@ func (*UserDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
 		res = append(res, row)
 	}
 	return res, err
+}
+
+func createScenario2Query(c *gin.Context) string {
+	var scenario2 = false
+	var query = " and id IN (SELECT user_id FROM posts WHERE 1=1 "
+	findByPostId := c.Query("findByPostId")
+	if findByPostId != "" {
+		scenario2 = true
+		query += ` and posts.id="` + findByPostId + `"`
+	}
+
+	findByPostDateTimeGTE := c.Query("findByPostDateTimeGTE")
+	if findByPostDateTimeGTE != "" {
+		scenario2 = true
+		query += ` and posts.date_time>="` + findByPostDateTimeGTE + `"`
+	}
+
+	findByPostDateTimeLTE := c.Query("findByPostDateTimeLTE")
+	if findByPostDateTimeLTE != "" {
+		scenario2 = true
+		query += ` and posts.date_time<="` + findByPostDateTimeLTE + `"`
+	}
+
+	findByPostItemId := c.Query("findByPostItemId")
+	if findByPostItemId != "" {
+		scenario2 = true
+		query += ` and posts.item_id="` + findByPostItemId + `"`
+	}
+
+	findByMaxPostItemScoreGTE := c.Query("findByMaxPostItemScoreGTE")
+	if findByMaxPostItemScoreGTE != "" {
+		scenario2 = true
+		query += ` and posts.item_score>="` + findByMaxPostItemScoreGTE +`"`
+	}
+
+	findByMaxPostItemScoreLTE := c.Query("findByMaxPostItemScoreLTE")
+	if findByMaxPostItemScoreLTE != "" {
+		scenario2 = true
+		query += ` and posts.item_score<="` + findByMaxPostItemScoreLTE +`"`
+	}
+
+	findByPostItemState := c.Query("findByPostItemState")
+	if findByPostItemState != "" {
+		scenario2 = true
+		query += ` and posts.item_state = "` + findByPostItemState + `"`
+	}
+
+	findByPostItemStateNotEQ := c.Query("findByPostItemStateNotEQ")
+	if findByPostItemStateNotEQ != "" {
+		scenario2 = true
+		query += ` and posts.item_state != "` + findByPostItemStateNotEQ + `"`
+	}
+
+	findByPostLikeUsersIncludeUserIds := c.Query("findByPostLikeUsersIncludeUserIds")
+	if findByPostLikeUsersIncludeUserIds != "" {
+		scenario2 = true
+		query += `  id IN (
+      SELECT post_likes.user_id
+      FROM post_likes
+      WHERE post_likes.id IN (`+ strings.Join(strings.Split(findByPostLikeUsersIncludeUserIds,","),`","`)+`)
+      GROUP BY post_likes.user_id
+      HAVING COUNT(post_likes.user_id) >=
+      ` + strconv.Itoa(len(strings.Split(findByPostLikeUsersIncludeUserIds,","))) + `)`
+	}
+
+	findByPostLikeUsersNotIncludeUserIds:= c.Query("findByPostLikeUsersNotIncludeUserIds")
+	if findByPostLikeUsersNotIncludeUserIds != "" {
+		scenario2 = true
+		query += `  id IN (
+      SELECT post_likes.user_id
+      FROM post_likes
+      WHERE post_likes.id IN (`+ strings.Join(strings.Split(findByPostLikeUsersNotIncludeUserIds,","),`","`)+`)
+      GROUP BY post_likes.user_id
+      HAVING COUNT(post_likes.user_id) >=
+      ` + strconv.Itoa(len(strings.Split(findByPostLikeUsersNotIncludeUserIds,","))) + `)`
+	}
+	if scenario2 {
+		return query
+	} else {
+		return ""
+	}
 }
