@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"totec/models"
+	"strings"
 )
 
 var postDao = &models.PostDao{}
@@ -40,8 +41,28 @@ func (*PostService) GetWebEndpoint(c *gin.Context)  {
 		c.String(http.StatusInternalServerError, err.Error())
 	}
 
+	item , _ := itemDao.Get(post.ItemId)
+
+	var likeUsers = []models.User{}
+	for _, fid := range strings.Split(post.LikeUsers,",") {
+		friend , _ := userDao.Get(fid)
+		likeUsers = append(likeUsers,friend)
+	}
+
+	posts, _ := postDao.FindByPostUserId(post.UserId, 8)
+	var postItems = []models.Item{}
+	for _, post := range posts {
+		item, _ := itemDao.Get(post.ItemId)
+		postItems = append(postItems, item)
+	}
+
+
 	c.HTML(http.StatusOK, "itemDetail.tmpl", gin.H{
 		"title": "Main website",
 		"post": post,
+		"item": item,
+		"likeUsers": likeUsers,
+		"postImages": postItems,
+		"tags": strings.Split(item.Tags,","),
 	})
 }

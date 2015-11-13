@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"totec/models"
+	"strings"
 )
 
 var itemDao = &models.ItemDao{}
@@ -47,6 +48,7 @@ func (*ItemService) GetWebEndpoint(c *gin.Context)  {
 		"item": item,
 		"users": users,
 		"posts": posts,
+		"tags": strings.Split(item.Tags,","),
 	})
 }
 
