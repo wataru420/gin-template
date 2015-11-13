@@ -81,3 +81,47 @@ func (*PostService) GetWebEndpoint(c *gin.Context) {
 		"tags":          strings.Split(item.Tags, ","),
 	})
 }
+
+
+func (*PostService) ListEndpoint(c *gin.Context) {
+
+	type resItem struct {
+		Id string	`json:"postId"`
+		DateTime int		`json:"postDateTime"`
+		UserId string	`json:"postUserId"`
+		ItemId string	`json:"postItemId"`
+		ItemScore int	`json:"postItemScore"`
+		ItemState string	`json:"postItemState"`
+		LikeUsers []string	`json:"postLikeUsers"`
+		Tags []string	`json:"postTags"`
+	}
+	type res struct {
+		Result bool        `json:"result"`
+		Data   []resItem `json:"data"`
+	}
+	limitParam := c.Query("limit")
+	limit := "100"
+	if limitParam != "" {
+		limit = limitParam
+	}
+
+	itemList, _ := postDao.FindByParam(c, limit)
+
+	var resItemList = []resItem{}
+	for _, row := range itemList {
+		resItemRow := resItem{}
+		resItemRow.Id = row.Id
+		resItemRow.DateTime = row.DateTime
+		resItemRow.UserId = row.UserId
+		resItemRow.ItemId = row.ItemId
+		resItemRow.ItemScore = row.ItemScore
+		resItemRow.ItemState = row.ItemState
+		resItemRow.LikeUsers = strings.Split(row.LikeUsers,",")
+		resItemRow.Tags = strings.Split(row.Tags,",")
+		resItemList = append(resItemList, resItemRow)
+	}
+	response := res{true, resItemList}
+	log.Println(response)
+	c.JSON(http.StatusOK, response)
+
+}

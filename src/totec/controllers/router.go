@@ -14,7 +14,7 @@ func InitRooter(e *gin.Engine) {
 
 	e.GET("/searchUser", userService.ListEndpoint)
 	e.GET("/searchItem", itemService.ListEndpoint)
-	e.GET("/searchPost", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
+	e.GET("/searchPost", postService.ListEndpoint)
 
 	e.GET("/user/:id", userService.GetWebEndpoint)
 	e.GET("/item/:id", itemService.GetWebEndpoint)
