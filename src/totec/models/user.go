@@ -207,28 +207,28 @@ func createScenario2Query(c *gin.Context) string {
 	findByPostLikeUsersIncludeUserIds := c.Query("findByPostLikeUsersIncludeUserIds")
 	if findByPostLikeUsersIncludeUserIds != "" {
 		scenario2 = true
-		query += `  id IN (
+		query += ` and id IN (
       SELECT post_likes.user_id
       FROM post_likes
-      WHERE post_likes.id IN (`+ strings.Join(strings.Split(findByPostLikeUsersIncludeUserIds,","),`","`)+`)
+      WHERE post_likes.id IN ("`+ strings.Join(strings.Split(findByPostLikeUsersIncludeUserIds,","),`","`)+`)
       GROUP BY post_likes.user_id
       HAVING COUNT(post_likes.user_id) >=
-      ` + strconv.Itoa(len(strings.Split(findByPostLikeUsersIncludeUserIds,","))) + `)`
+      ` + strconv.Itoa(len(strings.Split(findByPostLikeUsersIncludeUserIds,","))) + `")`
 	}
 
 	findByPostLikeUsersNotIncludeUserIds:= c.Query("findByPostLikeUsersNotIncludeUserIds")
 	if findByPostLikeUsersNotIncludeUserIds != "" {
 		scenario2 = true
-		query += `  id IN (
+		query += ` and id IN (
       SELECT post_likes.user_id
       FROM post_likes
-      WHERE post_likes.id IN (`+ strings.Join(strings.Split(findByPostLikeUsersNotIncludeUserIds,","),`","`)+`)
+      WHERE post_likes.id IN ("`+ strings.Join(strings.Split(findByPostLikeUsersNotIncludeUserIds,","),`","`)+`)
       GROUP BY post_likes.user_id
       HAVING COUNT(post_likes.user_id) >=
-      ` + strconv.Itoa(len(strings.Split(findByPostLikeUsersNotIncludeUserIds,","))) + `)`
+      ` + strconv.Itoa(len(strings.Split(findByPostLikeUsersNotIncludeUserIds,","))) + `")`
 	}
 	if scenario2 {
-		return query
+		return query + ")"
 	} else {
 		return ""
 	}
