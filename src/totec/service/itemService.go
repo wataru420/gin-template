@@ -42,9 +42,9 @@ func (*ItemService) GetWebEndpoint(c *gin.Context)  {
 
 	users, _ := userDao.FindByPostItemId(id,8)
 	posts, _ := postDao.FindByPostItemId(id,8)
-	var postItems = []models.Item{}
+	var postItems = []models.User{}
 	for _, post := range posts {
-		item, _ := itemDao.Get(post.ItemId)
+		item, _ := userDao.Get(post.UserId)
 		postItems = append(postItems, item)
 	}
 
