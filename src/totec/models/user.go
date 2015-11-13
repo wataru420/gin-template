@@ -127,13 +127,7 @@ func (*UserDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
 		` + strconv.Itoa(len(strings.Split(findByUserFriendsNotIncludeUserIds,","))) + ")"
 	}
 
-	var query2 = " and id IN (SELECT user_id FROM posts WHERE 1=1 "
-	findByPostId := c.Query("findByPostId")
-	if findByPostId != "" {
-		query += query2 + `posts.id="` + findByPostId + `"`
-	}
-
-	query += createScenario2Query(c)
+	query += createScenario2UserQuery(c)
 
 	query += " limit " + limit
 
@@ -153,7 +147,7 @@ func (*UserDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
 	return res, err
 }
 
-func createScenario2Query(c *gin.Context) string {
+func createScenario2UserQuery(c *gin.Context) string {
 	var scenario2 = false
 	var query = " and id IN (SELECT user_id FROM posts WHERE 1=1 "
 	findByPostId := c.Query("findByPostId")

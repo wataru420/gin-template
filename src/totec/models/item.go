@@ -2,7 +2,10 @@ package models
 import (
 	"encoding/json"
 	"github.com/garyburd/redigo/redis"
-)
+	"github.com/gin-gonic/gin"
+	"log"
+	"strings"
+	"strconv")
 
 type Item struct {
 	Id	  			string
@@ -54,65 +57,63 @@ func (*ItemDao) FindByPostUserId(id string, limit int) ([]Item, error) {
 	return res, err
 }
 
-/*
 func (*ItemDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
 	var res = []User{}
 
 	var query = "SELECT " + allItemColums + " FROM users WHERE 1=1"
 
-	findByUserId := c.Query("findByUserId")
-	if findByUserId != "" {
-		query += " and id = '" + findByUserId + "'"
+	findByItemId := c.Query("findByItemId")
+	if findByItemId != "" {
+		query += " and id = '" + findByItemId + "'"
 	}
 
-	findByUserPublicScoreGTE := c.Query("findByUserPublicScoreGTE")
-	if findByUserPublicScoreGTE != "" {
-		query += " and public_score >= " + findByUserPublicScoreGTE
+	findByItemSupplier := c.Query("findByItemSupplier")
+	if findByItemSupplier != "" {
+		query += " and supplier = '" + findByItemSupplier + "'"
 	}
 
-	findByUserPublicScoreLTE := c.Query("findByUserPublicScoreLTE")
-	if findByUserPublicScoreLTE != "" {
-		query += " and public_score <= " + findByUserPublicScoreLTE
+	findByItemSoldQuantityGTE := c.Query("findByItemSoldQuantityGTE")
+	if findByItemSoldQuantityGTE != "" {
+		query += " and sold_quantity >= " + findByItemSoldQuantityGTE
 	}
 
-	findByUserFriendsNumberGTE := c.Query("findByUserFriendsNumberGTE")
-	if findByUserFriendsNumberGTE != "" {
-		query += " and friend_num >=" + findByUserFriendsNumberGTE
+	findByItemSoldQuantityLTE := c.Query("findByItemSoldQuantityLTE")
+	if findByItemSoldQuantityLTE != "" {
+		query += " and sold_quantity <= " + findByItemSoldQuantityLTE
 	}
 
-	findByUserFriendsNumberLTE := c.Query("findByUserFriendsNumberLTE")
-	if findByUserFriendsNumberLTE != "" {
-		query += " and friend_num <=" + findByUserFriendsNumberLTE
+	findByItemSalePriceGTE := c.Query("findByItemSalePriceGTE")
+	if findByItemSalePriceGTE != "" {
+		query += " and sales_price >=" + findByItemSalePriceGTE
 	}
 
-	findByUserFriendsIncludeUserIds := c.Query("findByUserFriendsIncludeUserIds")
-	if findByUserFriendsIncludeUserIds != "" {
+	findByItemSalePriceLTE := c.Query("findByItemSalePriceLTE")
+	if findByItemSalePriceLTE != "" {
+		query += " and sales_price <=" + findByItemSalePriceLTE
+	}
+
+	findByItemTagsIncludeAll := c.Query("findByItemTagsIncludeAll")
+	if findByItemTagsIncludeAll != "" {
 		query += `
 	     and id IN (
-    	SELECT friend_id
-    	FROM friend_relations
-    	WHERE id IN ("` + strings.Join(strings.Split(findByUserFriendsIncludeUserIds,","),`","`) + `")
-    	GROUP BY friend_id
-   		HAVING COUNT(friend_id) >=
-		` + strconv.Itoa(len(strings.Split(findByUserFriendsIncludeUserIds,","))) + ")"
+    	SELECT item_tags.tag
+    	FROM item_tags
+    	WHERE item_tags.id IN ("` + strings.Join(strings.Split(findByItemTagsIncludeAll,","),`","`) + `")
+    	GROUP BY item_tags.tag
+	    HAVING COUNT(item_tags.tag) >=
+		` + strconv.Itoa(len(strings.Split(findByItemTagsIncludeAll,","))) + ")"
 	}
 
-	findByUserFriendsNotIncludeUserIds := c.Query("findByUserFriendsNotIncludeUserIds")
-	if findByUserFriendsNotIncludeUserIds != "" {
+	findByItemTagsIncludeAny := c.Query("findByItemTagsIncludeAny")
+	if findByItemTagsIncludeAny != "" {
 		query += `
 	     and id NOT IN (
-    	SELECT friend_id
-    	FROM friend_relations
-    	WHERE id IN ("` + strings.Join(strings.Split(findByUserFriendsNotIncludeUserIds,","),`","`) + `")
-    	GROUP BY friend_id
-   		HAVING COUNT(friend_id) >=
-		` + strconv.Itoa(len(strings.Split(findByUserFriendsNotIncludeUserIds,","))) + ")"
-	}
-
-	var query2 = " and id IN (SELECT user_id FROM posts WHERE 1=1 "
-	findByPostId := c.Query("findByPostId")
-	if findByPostId != "" {
-		query += query2 + `posts.id="` + findByPostId + `"`
+    	SELECT item_tags.tag
+    	FROM item_tags
+    	WHERE item_tags.id IN ("` + strings.Join(strings.Split(findByItemTagsIncludeAny,","),`","`) + `")
+    	GROUP BY item_tags.tag
+	    HAVING COUNT(item_tags.tag) >=
+		` + strconv.Itoa(len(strings.Split(findByItemTagsIncludeAny,","))) + ")"
 	}
 
 	query += createScenario2Query(c)
@@ -215,4 +216,3 @@ func createScenario2Query(c *gin.Context) string {
 		return ""
 	}
 }
-*/
