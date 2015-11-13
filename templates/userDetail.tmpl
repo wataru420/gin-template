@@ -69,8 +69,7 @@
   <div class="items">
     <h5 class="p-a">このユーザーのおすすめ商品</h5>
     <div class="row p-l p-r m-r-0">
-      {{range .items}}
-      <div class="col-xs-3 p-a-0 p-b text-center">
+      {{range .items}}<div class="col-xs-3 p-a-0 p-b text-center">
         <img src="/static/img/item/48/{{ .Image}}" alt="商品{{ .Id}}のサムネイル画像" class="img-rounded" width="48" height="48">
       </div>
       {{ end }}
