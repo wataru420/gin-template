@@ -64,11 +64,10 @@
       <p class="m-b-0">商品に対するアクションステータス: {{.post.ItemState}}</p>
     </div>
   </div>
-
-  {{if (len .likeUsers) gt 0}}
+  {{if gt .likeUserCount 0}}
   <!-- liked users -->
   <div class="likedUsers">
-    <h5 class="p-a">いいねしたユーザー <span class="label label-pill label-default">{{len .likeUsers}}</span></h5>
+    <h5 class="p-a">いいねしたユーザー <span class="label label-pill label-default">{{.likeUserCount}}</span></h5>
     <div class="list-group">
       {{range .likeUsers}}
       <button type="button" class="list-group-item">
@@ -77,7 +76,7 @@
         </a>
       </button>
       {{end}}
-      {{if (len .likeUsers) ge 4}}
+      {{if gt .likeUserCount 4}}
       <button type="button" class="list-group-item">
         <div class="text-right">
           <a href="#">もっと見る</a>
@@ -87,7 +86,7 @@
     </div>
   </div>
   {{end}}
-  {{if (len .userImages) gt 0}}
+  {{if gt (len .userImages) 0}}
   <!-- Users -->
   <div class="users">
     <h5 class="p-a">この商品をおすすめしているユーザー</h5>
@@ -98,7 +97,7 @@
     </div>
   </div>
   {{end}}
-  {{if (len .postImages) gt 0}}
+  {{if gt (len .postImages) 0}}
   <!-- Reccomended Items -->
   <div class="items">
     <h5 class="p-a">最近投稿されたレビュー</h5>

@@ -44,9 +44,8 @@
 
   <!-- Friends -->
   <div class="friends">
-    <h5 class="p-a">フレンド <span class="label label-pill label-default">{{len .friends}}</span></h5>
+    <h5 class="p-a">フレンド <span class="label label-pill label-default">{{.friendsCount}}</span></h5>
     <div class="list-group">
-      {{$index := 0}}
       {{range .friends}}
       <button type="button" class="list-group-item">
         <a href="#" style="color: #333">
@@ -54,7 +53,7 @@
         </a>
       </button>
       {{ end }}
-      {{if (len .friends) ge 4}}
+      {{if ge .friendsCount 4}}
       <button type="button" class="list-group-item">
         <div class="text-right">
           <a href="#">もっと見る</a>
@@ -64,7 +63,7 @@
     </div>
   </div>
 
-  {{if (len .items) gt 0}}
+  {{if gt (len .items) 0}}
   <!-- Reccomended Items -->
   <div class="items">
     <h5 class="p-a">このユーザーのおすすめ商品</h5>
@@ -76,7 +75,7 @@
     </div>
   </div>
   {{end}}
-  {{if (len .postImages) gt 0}}
+  {{if gt (len .postImages) 0}}
   <!-- Recent Posts -->
   <div class="posts">
     <h5 class="p-a">最近投稿されたレビュー</h5>

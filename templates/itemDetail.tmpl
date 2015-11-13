@@ -49,7 +49,7 @@
     </div>
   </div>
 
-  {{if (len .users) gt 0}}
+  {{if gt (len .users) 0}}
   <!-- Users -->
   <div class="users">
     <h5 class="p-a">この商品をおすすめしているユーザー</h5>
@@ -62,7 +62,7 @@
     </div>
   </div>
   {{end}}
-  {{if (len .postImages) gt 0}}
+  {{if gt (len .postImages) 0}}
   <!-- Recent Posts -->
   <div class="posts">
     <h5 class="p-a">最近投稿されたレビュー</h5>
