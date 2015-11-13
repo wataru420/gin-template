@@ -85,8 +85,8 @@ func (*UserService) ListEndpoint(c *gin.Context) {
 		limit = limitParam
 	}
 
-	userDao.FindByParam(c,limit)
-	c.JSON(http.StatusOK,res{"true",nil})
+	userList,_ := userDao.FindByParam(c,limit)
+	c.JSON(http.StatusOK,res{"true",userList})
 //	resList := []res{}
 //
 //	userList, err := userDao.GetList()
