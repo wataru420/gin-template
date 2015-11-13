@@ -210,7 +210,7 @@ func createScenario2Query(c *gin.Context) string {
 		query += ` and id IN (
       SELECT post_likes.user_id
       FROM post_likes
-      WHERE post_likes.id IN ("`+ strings.Join(strings.Split(findByPostLikeUsersIncludeUserIds,","),`","`)+`)
+      WHERE post_likes.id IN ("`+ strings.Join(strings.Split(findByPostLikeUsersIncludeUserIds,","),`","`)+`")
       GROUP BY post_likes.user_id
       HAVING COUNT(post_likes.user_id) >=
       ` + strconv.Itoa(len(strings.Split(findByPostLikeUsersIncludeUserIds,","))) + `")`
@@ -222,7 +222,7 @@ func createScenario2Query(c *gin.Context) string {
 		query += ` and id IN (
       SELECT post_likes.user_id
       FROM post_likes
-      WHERE post_likes.id IN ("`+ strings.Join(strings.Split(findByPostLikeUsersNotIncludeUserIds,","),`","`)+`)
+      WHERE post_likes.id IN ("`+ strings.Join(strings.Split(findByPostLikeUsersNotIncludeUserIds,","),`","`)+`")
       GROUP BY post_likes.user_id
       HAVING COUNT(post_likes.user_id) >=
       ` + strconv.Itoa(len(strings.Split(findByPostLikeUsersNotIncludeUserIds,","))) + `")`

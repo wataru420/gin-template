@@ -77,9 +77,17 @@ func (*UserService) GetWebEndpoint(c *gin.Context) {
 }
 
 func (*UserService) ListEndpoint(c *gin.Context) {
+
+	type resUser struct {
+		UserId string	`json:"userId"`
+		UserNo int		`json:"userNo"`
+		UserPublicScore int	`json:"userPublicScore"`
+		UserFriends []string	`json:"userFriends"`
+		UserImage string	`json:"userImage"`
+	}
 	type res struct {
-		Result string        `json:"result"`
-		Data   []models.User `json:"name"`
+		Result bool        `json:"result"`
+		Data   []resUser `json:"data"`
 	}
 	limitParam := c.Query("limit")
 	limit := "100"
@@ -88,7 +96,23 @@ func (*UserService) ListEndpoint(c *gin.Context) {
 	}
 
 	userList, _ := userDao.FindByParam(c, limit)
-	c.JSON(http.StatusOK, res{"true", userList})
+
+	var resUserList = []resUser{}
+	for _, user := range userList {
+		log.Println(user.Id)
+		resUserRow := resUser{}
+		resUserRow.UserId = user.Id
+		resUserRow.UserNo=user.No
+		resUserRow.UserPublicScore=user.PublicScore
+		resUserRow.UserFriends=strings.Split(user.Friends,",")
+		resUserRow.UserImage=user.Image
+		resUserList = append(resUserList, resUserRow)
+	}
+	response := res{true, resUserList}
+	log.Println(response)
+	c.JSON(http.StatusOK, response)
+
+
 	//	resList := []res{}
 	//
 	//	userList, err := userDao.GetList()
