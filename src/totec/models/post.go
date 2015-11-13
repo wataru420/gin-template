@@ -2,6 +2,7 @@ package models
 import (
 	"encoding/json"
 	"github.com/garyburd/redigo/redis"
+	"database/sql"
 )
 
 type Post struct {
@@ -39,12 +40,24 @@ func (*PostDao) Get(id string) (Post, error) {
 }
 
 func (*PostDao) FindByPostUserId(id string, limit int) ([]Post, error) {
-	var res = []Post{}
 	rows, err := dbs.Query(`SELECT ` + allPostColums + ` FROM posts where user_id=? limit ?`, id, limit)
 	if err != nil {
-		return res, err
+		return []Post{}, err
 	}
+	return postRowScan(rows)
+}
 
+
+func (*PostDao) FindByPostItemId(id string, limit int) ([]Post, error) {
+	rows, err := dbs.Query(`SELECT ` + allPostColums + ` FROM posts where item_id=? limit ?`, id, limit)
+	if err != nil {
+		return []Post{}, err
+	}
+	return postRowScan(rows)
+}
+
+func postRowScan(rows *sql.Rows) ([]Post,error) {
+	var res = []Post{}
 	for rows.Next() {
 		row := Post{}
 		if err := rows.Scan(&row.Id,&row.DateTime,&row.UserId,&row.ItemId,&row.ItemScore,&row.ItemState,&row.LikeUsers,&row.Tags); err != nil {
@@ -52,5 +65,5 @@ func (*PostDao) FindByPostUserId(id string, limit int) ([]Post, error) {
 		}
 		res = append(res, row)
 	}
-	return res, err
+	return res, nil
 }

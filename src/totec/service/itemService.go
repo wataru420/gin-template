@@ -40,11 +40,13 @@ func (*ItemService) GetWebEndpoint(c *gin.Context)  {
 	}
 
 	users, _ := userDao.FindByPostItemId(id,8)
+	posts, _ := postDao.FindByPostItemId(id,8)
 
 	c.HTML(http.StatusOK, "itemDetail.tmpl", gin.H{
 		"title": "Main website",
 		"item": item,
 		"users": users,
+		"posts": posts,
 	})
 }
 
