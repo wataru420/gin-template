@@ -38,7 +38,7 @@ func (*UserDao) Get(id string) (User, error) {
 	con := redisPool.Get()
 	defer con.Close()
 
-	s, err := redis.Bytes(con.Do("GET", id))
+	s, err := redis.Bytes(con.Do("GET", "user:" + id))
 	if s != nil {
 		json.Unmarshal(s, &res)
 		return res, err
@@ -46,6 +46,6 @@ func (*UserDao) Get(id string) (User, error) {
 
 	err = dbs.QueryRow(`SELECT id,no,public_score,friends,image FROM users WHERE id=?`, id).Scan(&res.Id,&res.No,&res.PublicScore,&res.Friends,&res.Image)
 	serialized, _ := json.Marshal(res)
-	con.Do("SET", id,serialized)
+	con.Do("SET", "user:" + id,serialized)
 	return res, err
 }
