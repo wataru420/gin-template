@@ -59,10 +59,10 @@ func (*UserService) GetWebEndpoint(c *gin.Context)  {
 		c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	var postImages = []string{}
+	var postItems = []models.Item{}
 	for _, post := range posts {
 		item, _ := itemDao.Get(post.ItemId)
-		postImages = append(postImages, item.Image)
+		postItems = append(postItems, item)
 	}
 
 	c.HTML(http.StatusOK, "userDetail.tmpl", gin.H{
