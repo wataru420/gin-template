@@ -70,8 +70,8 @@ func (*UserService) GetWebEndpoint(c *gin.Context)  {
 		"user": user,
 		"friends": friends,
 		"items": items,
-		"posts": postImages,
-		"postImages": postImages,
+		"posts": posts,
+		"postImages": postItems,
 	})
 }
 
