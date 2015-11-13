@@ -74,11 +74,11 @@ func (*UserDao) FindByPostItemId(id string, limit int) ([]User, error) {
 func (*UserDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
 	var res = []User{}
 
-	var query = "SELECT " + allUserColums + " FROM USER "
+	var query = "SELECT " + allUserColums + " FROM users WHERE "
 
 	findByUserId := c.Query("findByUserId")
 	if findByUserId != "" {
-		query += " id = `" + findByUserId + "`"
+		query += " id = '" + findByUserId + "'"
 	}
 
 	findByUserPublicScoreGTE := c.Query("findByUserPublicScoreGTE")
