@@ -55,7 +55,7 @@
   <div class="userReview p-t">
     <blockquote class="blockquote">
       <p>この商品、いい感じ。</p>
-      <footer>by <img src="/static/img/user/24/{{.user.Image}}" alt="{{.post.UserId}}のサムネイル画像" class="img-circle" width="24" height="24" style="vertical-align: bottom;"> Us000000</cite></footer>
+      <footer>by <img src="/static/img/user/24/{{.user.Image}}" alt="{{.post.UserId}}のサムネイル画像" class="img-circle" width="24" height="24" style="vertical-align: bottom;"> {{.post.UserId}}</cite></footer>
     </blockquote>
     <!-- review info -->
     <div class="reviewInfo text-muted p-l p-r p-b" style="font-size: 0.8rem;">
@@ -68,7 +68,7 @@
   {{if (len .likeUsers) gt 0}}
   <!-- liked users -->
   <div class="likedUsers">
-    <h5 class="p-a">いいねしたユーザー <span class="label label-pill label-default">4</span></h5>
+    <h5 class="p-a">いいねしたユーザー <span class="label label-pill label-default">{{len .likeUsers}}</span></h5>
     <div class="list-group">
       {{range .likeUsers}}
       <button type="button" class="list-group-item">
@@ -93,7 +93,7 @@
     <h5 class="p-a">この商品をおすすめしているユーザー</h5>
     <div class="row p-l p-r m-r-0">
       {{range .userImages}}<div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/48/{{.Image}}" alt="商品{{.Id}}のサムネイル画像" class="img-circle" width="48" height="48">
+        <img src="/static/img/user/48/{{.Image}}" alt="{{.Id}}のサムネイル画像" class="img-circle" width="48" height="48">
       </div>{{end}}
     </div>
   </div>
