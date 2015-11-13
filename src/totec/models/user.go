@@ -2,6 +2,8 @@ package models
 import (
 	"encoding/json"
 	"github.com/garyburd/redigo/redis"
+	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type User struct {
@@ -67,4 +69,17 @@ func (*UserDao) FindByPostItemId(id string, limit int) ([]User, error) {
 		res = append(res, row)
 	}
 	return res, err
+}
+
+func (*UserDao) FindByParam(c *gin.Context, limit int) ([]User, error) {
+	var res = []User{}
+
+	var query = "SELECT " + allUserColums + "FROM USER "
+
+	findByPostId := c.Query("findByPostId")
+	if findByPostId != "" {
+		log.Println("findByPostId:",findByPostId)
+		query += " id = " + findByPostId
+	}
+	return res, nil
 }

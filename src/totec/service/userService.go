@@ -80,21 +80,14 @@ func (*UserService) ListEndpoint(c *gin.Context) {
 		Result string `json:"result"`
 		Data []models.User `json:"name"`
 	}
-	limitParam := c.Param("limit")
+	limitParam := c.Query("limit")
 	limit := 100
-	if limitParam == "" {
+	if limitParam != "" {
 		limit,_ = strconv.Atoi(limitParam)
 	}
-	log.Println(limit)
 
-	param := c.Param("findByPostId")
-	if param != "" {
-		var userList = []models.User{}
-		user, _ := userDao.Get(param)
-		userList = append(userList, user)
-		c.JSON(http.StatusOK,res{"true",userList})
-
-	}
+	userDao.FindByParam(c,limit)
+	c.JSON(http.StatusOK,res{"true",nil})
 //	resList := []res{}
 //
 //	userList, err := userDao.GetList()

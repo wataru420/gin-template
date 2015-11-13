@@ -57,7 +57,7 @@ func (*PostService) GetWebEndpoint(c *gin.Context)  {
 	}
 
 
-	c.HTML(http.StatusOK, "itemDetail.tmpl", gin.H{
+	c.HTML(http.StatusOK, "postDetail.tmpl", gin.H{
 		"title": "Main website",
 		"post": post,
 		"item": item,
