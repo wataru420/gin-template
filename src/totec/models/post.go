@@ -37,3 +37,20 @@ func (*PostDao) Get(id string) (Post, error) {
 	con.Do("SET", "item" + id,serialized)
 	return res, err
 }
+
+func (*PostDao) FindByPostUserId(id string, limit int) ([]Post, error) {
+	var res = []Post{}
+	rows, err := dbs.Query(`SELECT ` + allPostColums + ` FROM posts where user_id=? limit ?`, id, limit)
+	if err != nil {
+		return res, err
+	}
+
+	for rows.Next() {
+		row := Post{}
+		if err := rows.Scan(&row.Id,&row.DateTime,&row.UserId,&row.ItemId,&row.ItemScore,&row.ItemState,&row.LikeUsers,&row.Tags); err != nil {
+			return res, err
+		}
+		res = append(res, row)
+	}
+	return res, err
+}

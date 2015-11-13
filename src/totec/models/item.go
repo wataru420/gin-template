@@ -17,7 +17,7 @@ type Item struct {
 type ItemDao struct {
 }
 
-var allItemColums = "id,no,supplier,solid_quantity,sale_price,tags,image"
+var allItemColums = "items.id,items.no,items.supplier,items.solid_quantity,items.sale_price,items.tags,items.image "
 
 func (*ItemDao) Get(id string) (Item, error) {
 	res := Item{Id:id}
@@ -39,7 +39,7 @@ func (*ItemDao) Get(id string) (Item, error) {
 
 func (*ItemDao) FindByPostUserId(id string, limit int) ([]Item, error) {
 	var res = []Item{}
-	rows, err := dbs.Query(`SELECT ` + allItemColums + ` FROM items where id=? limit ?`, id, limit)
+	rows, err := dbs.Query(`SELECT ` + allItemColums + `FROM items INNER JOIN posts ON items.id = posts.item_id where posts.user_id=? limit ?`, id, limit)
 	if err != nil {
 		return res, err
 	}

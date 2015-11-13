@@ -39,14 +39,18 @@ func (*UserService) GetWebEndpoint(c *gin.Context)  {
 	}
 
 	var friends = []models.User{}
-	for i, fid := range strings.Split(user.Friends,",") {
-		if i < 5 {
-			friend , _ := userDao.Get(fid)
-			friends = append(friends,friend)
-		}
+	for _, fid := range strings.Split(user.Friends,",") {
+		friend , _ := userDao.Get(fid)
+		friends = append(friends,friend)
 	}
 
 	items, err := itemDao.FindByPostUserId(id,8)
+	if err != nil {
+		log.Println("error")
+		c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	posts, err := postDao.FindByPostUserId(id,8)
 	if err != nil {
 		log.Println("error")
 		c.String(http.StatusInternalServerError, err.Error())
@@ -57,6 +61,7 @@ func (*UserService) GetWebEndpoint(c *gin.Context)  {
 		"user": user,
 		"friends": friends,
 		"items": items,
+		"posts": posts,
 	})
 }
 
