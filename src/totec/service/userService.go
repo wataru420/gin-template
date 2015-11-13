@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"totec/models"
 	"strings"
+	"strconv"
 )
 
 var userDao = &models.UserDao{}
@@ -12,6 +13,8 @@ var userDao = &models.UserDao{}
 type UserService struct {}
 
 func (*UserService) GetEndpoint(c *gin.Context)  {
+
+
 	id := c.Param("id")
 
 	user, err := userDao.Get(id)
@@ -56,22 +59,42 @@ func (*UserService) GetWebEndpoint(c *gin.Context)  {
 		c.String(http.StatusInternalServerError, err.Error())
 	}
 
+	var postImages = []string{}
+	for _, post := range posts {
+		item, _ := itemDao.Get(post.ItemId)
+		postImages = append(postImages, item.Image)
+	}
+
 	c.HTML(http.StatusOK, "userDetail.tmpl", gin.H{
 		"title": "Main website",
 		"user": user,
 		"friends": friends,
 		"items": items,
-		"posts": posts,
+		"posts": postImages,
+		"postImages": postImages,
 	})
 }
 
-//func (*UserService) ListEndpoint(c *gin.Context) {
-//	type res struct {
-//		Id int `json:"id"`
-//		Name string `json:"name"`
-//		Type int `json:"type"`
-//	}
-//
+func (*UserService) ListEndpoint(c *gin.Context) {
+	type res struct {
+		Result string `json:"result"`
+		Data []models.User `json:"name"`
+	}
+	limitParam := c.Param("limit")
+	limit := 100
+	if limitParam == "" {
+		limit,_ = strconv.Atoi(limitParam)
+	}
+	log.Println(limit)
+
+	param := c.Param("findByPostId")
+	if param != "" {
+		var userList = []models.User{}
+		user, _ := userDao.Get(param)
+		userList = append(userList, user)
+		c.JSON(http.StatusOK,res{"true",userList})
+
+	}
 //	resList := []res{}
 //
 //	userList, err := userDao.GetList()
@@ -111,4 +134,5 @@ func (*UserService) GetWebEndpoint(c *gin.Context)  {
 //	c.HTML(http.StatusOK, "userList.tmpl", gin.H{
 //		"title": "Main website",
 //		"userList": resList,
-//	})}
+//	})
+}

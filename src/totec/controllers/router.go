@@ -12,7 +12,7 @@ var postService = &service.PostService{}
 func InitRooter(e *gin.Engine) {
 	e.GET("/status", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
 
-	e.GET("/searchUser", userService.GetEndpoint)
+	e.GET("/searchUser", userService.ListEndpoint)
 	e.GET("/searchItem", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
 	e.GET("/searchPost", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
 
