@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"totec/models"
 	"strings"
-	"strconv"
 )
 
 var userDao = &models.UserDao{}
@@ -81,9 +80,9 @@ func (*UserService) ListEndpoint(c *gin.Context) {
 		Data []models.User `json:"name"`
 	}
 	limitParam := c.Query("limit")
-	limit := 100
+	limit := "100"
 	if limitParam != "" {
-		limit,_ = strconv.Atoi(limitParam)
+		limit = limitParam
 	}
 
 	userDao.FindByParam(c,limit)

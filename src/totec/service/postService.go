@@ -51,16 +51,18 @@ func (*PostService) GetWebEndpoint(c *gin.Context)  {
 
 	posts, _ := postDao.FindByPostUserId(post.UserId, 8)
 	var postItems = []models.Item{}
-	for _, post := range posts {
-		item, _ := itemDao.Get(post.ItemId)
+	for _, p := range posts {
+		item, _ := itemDao.Get(p.ItemId)
 		postItems = append(postItems, item)
 	}
 
+	user, _ := userDao.Get(post.UserId)
 
 	c.HTML(http.StatusOK, "postDetail.tmpl", gin.H{
 		"title": "Main website",
 		"post": post,
 		"item": item,
+		"user": user,
 		"likeUsers": likeUsers,
 		"postImages": postItems,
 		"tags": strings.Split(item.Tags,","),

@@ -3,7 +3,6 @@ import (
 	"encoding/json"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 type User struct {
@@ -71,15 +70,36 @@ func (*UserDao) FindByPostItemId(id string, limit int) ([]User, error) {
 	return res, err
 }
 
-func (*UserDao) FindByParam(c *gin.Context, limit int) ([]User, error) {
+func (*UserDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
 	var res = []User{}
 
 	var query = "SELECT " + allUserColums + "FROM USER "
 
-	findByPostId := c.Query("findByPostId")
-	if findByPostId != "" {
-		log.Println("findByPostId:",findByPostId)
-		query += " id = " + findByPostId
+	findByUserId := c.Query("findByUserId")
+	if findByUserId != "" {
+		query += " id = " + findByUserId
 	}
+
+	findByUserPublicScoreGTE := c.Query("findByUserPublicScoreGTE")
+	if findByUserPublicScoreGTE != "" {
+		query += " publicScore >= " + findByUserPublicScoreGTE
+	}
+
+	findByUserPublicScoreLTE := c.Query("findByUserPublicScoreLTE")
+	if findByUserPublicScoreLTE != "" {
+		query += " publicScore <= " + findByUserPublicScoreLTE
+	}
+
+	findByUserFriendsNumberGTE := c.Query("findByUserFriendsNumberGTE")
+	if findByUserFriendsNumberGTE != "" {
+		query += " friendNum >=" + findByUserFriendsNumberGTE
+	}
+
+	findByUserFriendsNumberLTE := c.Query("findByUserFriendsNumberLTE")
+	if findByUserFriendsNumberLTE != "" {
+		query += " friendNum <=" + findByUserFriendsNumberLTE
+	}
+
+	query += " limit " + limit
 	return res, nil
 }
