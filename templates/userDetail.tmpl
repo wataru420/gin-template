@@ -8,6 +8,14 @@
     font-family: 'Raleway', sans-serif;
   }
 </style>
+{{range .friends}}
+<li>{{ .Id}}</li>
+{{ end }}
+
+{{range .items}}
+<li>{{ .Id}}</li>
+{{ end }}
+
 </head>
 <body>
 <div class="app">
