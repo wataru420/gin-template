@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"totec/models"
+	"strings"
 )
 
 var userDao = &models.UserDao{}
@@ -23,7 +24,7 @@ func (*UserService) GetEndpoint(c *gin.Context)  {
 		"userId": user.Id,
 		"userNo": user.No,
 		"userPublicSore": user.PublicScore,
-		"userFriends": user.Friends,
+		"userFriends": strings.Split(user.Friends,","),
 		"userImage": user.Image,
 	})
 }
@@ -33,13 +34,22 @@ func (*UserService) GetWebEndpoint(c *gin.Context)  {
 
 	user , err := userDao.Get(id)
 	if err != nil {
-		log.Fatal("error")
+		log.Println("error")
 		c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	var friends = []models.User{}
+	for i, fid := range strings.Split(user.Friends,",") {
+		if i < 5 {
+			friend , _ := userDao.Get(fid)
+			friends = append(friends,friend)
+		}
 	}
 
 	c.HTML(http.StatusOK, "userDetail.tmpl", gin.H{
 		"title": "Main website",
 		"user": user,
+		"friends": friends,
 	})
 }
 

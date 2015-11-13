@@ -6,6 +6,8 @@ import (
 )
 
 var userService = &service.UserService{}
+var itemService = &service.ItemService{}
+var postService = &service.PostService{}
 
 func InitRooter(e *gin.Engine) {
 	e.GET("/status", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
@@ -14,9 +16,9 @@ func InitRooter(e *gin.Engine) {
 	e.GET("/searchItem", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
 	e.GET("/searchPost", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
 
-	e.GET("/user/:id", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
-	e.GET("/item/:id", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
-	e.GET("/post/:id", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
+	e.GET("/user/:id", userService.GetWebEndpoint)
+	e.GET("/item/:id", itemService.GetWebEndpoint)
+	e.GET("/post/:id", postService.GetWebEndpoint)
 //
 //	json := e.Group("/json")
 //	{

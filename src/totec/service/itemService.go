@@ -35,7 +35,7 @@ func (*ItemService) GetWebEndpoint(c *gin.Context)  {
 
 	item , err := itemDao.Get(id)
 	if err != nil {
-		log.Fatal("error")
+		log.Println("error")
 		c.String(http.StatusInternalServerError, err.Error())
 	}
 

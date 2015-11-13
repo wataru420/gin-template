@@ -36,7 +36,7 @@ func (*PostService) GetWebEndpoint(c *gin.Context)  {
 
 	post , err := postDao.Get(id)
 	if err != nil {
-		log.Fatal("error")
+		log.Println("error")
 		c.String(http.StatusInternalServerError, err.Error())
 	}
 
