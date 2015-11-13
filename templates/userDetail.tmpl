@@ -46,6 +46,7 @@
   <div class="friends">
     <h5 class="p-a">フレンド <span class="label label-pill label-default">{{len .friends}}</span></h5>
     <div class="list-group">
+      {{$index := 0}}
       {{range .friends}}
       <button type="button" class="list-group-item">
         <a href="#" style="color: #333">
@@ -76,13 +77,12 @@
     </div>
   </div>
   {{end}}
-
-  {{if (len .posts) gt 0}}
+  {{if (len .postImages) gt 0}}
   <!-- Recent Posts -->
   <div class="posts">
     <h5 class="p-a">最近投稿されたレビュー</h5>
     <div class="row p-l p-r">
-      {{range .posts}}
+      {{range .postImages}}
       <div class="col-xs-3 p-a-0 p-b text-center">
         <img src="/static/img/item/48/{{ .Image}}" alt="商品{{ .Id}}のサムネイル画像" class="img-rounded" width="48" height="48">
       </div>
