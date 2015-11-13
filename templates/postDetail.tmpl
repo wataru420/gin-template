@@ -1,5 +1,5 @@
 {{template "header"}}
-<title>レビュー: 商品It000000 レビューワーUs000000 のページ</title>
+<title>レビュー: 商品{{.item.Id}} レビューワー{{.post.UserId}} のページ</title>
 <style>
   .app {
     color: #333;
@@ -27,7 +27,7 @@
   <ol class="breadcrumb" style="background-color: rgba(1, 1, 1, .05);">
     <li><a href="#">Home</a></li>
     <li><a href="#">Reviews</a></li>
-    <li class="active">PostID</li>
+    <li class="active">{{.post.Id}}</li>
   </ol>
 
   <!-- container -->
@@ -36,115 +36,81 @@
     <!-- User Info -->
     <div class="row p-a">
       <div class="text-center col-xs-6">
-        <img src="/static/img/item/It000000.jpg" class="img-rounded" width="100" height="100" alt="商品It000000のサムネイル画像">
+        <img src="/static/img/item/100/{{ .item.Image}}" class="img-rounded" width="100" height="100" alt="商品{{.item.Id}}のサムネイル画像">
       </div>
       <div class="col-xs-6">
-        <p>It000000</p>
-        <p class="m-b-0">アップル</p>
-        <p class="m-b-0">売上個数: 87</p>
-        <p>23,567円</p>
+        <p>{{.item.Id}}</p>
+        <p class="m-b-0">{{.item.Supplier}}</p>
+        <p class="m-b-0">売上個数: {{.item.SoldQuantity}}</p>
+        <p>{{.item.SalePrice}}円</p>
         <p>
-          <span class="label label-pill label-warning">工具</span>
-          <span class="label label-pill label-warning">ドリル</span>
+          {{range .tags}}
+          <span class="label label-pill label-warning">{{.}}</span>
+          {{end}}
         </p>
       </div>
     </div>
   </div>
-
   <!-- user review -->
   <div class="userReview p-t">
     <blockquote class="blockquote">
       <p>この商品、いい感じ。</p>
-      <footer>by <img src="/static/img/user/Us000000.png" alt="Us000000のサムネイル画像" class="img-circle" width="24" height="24" style="vertical-align: bottom;"> Us000000</cite></footer>
+      <footer>by <img src="/static/img/user/24/{{.post.UserId}}.png" alt="{{.post.UserId}}のサムネイル画像" class="img-circle" width="24" height="24" style="vertical-align: bottom;"> Us000000</cite></footer>
     </blockquote>
     <!-- review info -->
     <div class="reviewInfo text-muted p-l p-r p-b" style="font-size: 0.8rem;">
-      <p class="m-b-0">投稿日時: 2015年7月12日 19:38</p>
-      <p class="m-b-0">商品の評価点数: 87</p>
-      <p class="m-b-0">商品に対するアクションステータス: 購入済み</p>
+      <p class="m-b-0">投稿日時: {{.post.DateTime}}</p>
+      <p class="m-b-0">商品の評価点数: {{.post.ItemScore}}</p>
+      <p class="m-b-0">商品に対するアクションステータス: {{.post.ItemState}}</p>
     </div>
   </div>
 
+  {{if (len .likeUsers) gt 0}}
   <!-- liked users -->
   <div class="likedUsers">
     <h5 class="p-a">いいねしたユーザー <span class="label label-pill label-default">4</span></h5>
     <div class="list-group">
+      {{range .likeUsers}}
       <button type="button" class="list-group-item">
         <a href="#" style="color: #333;">
-          <img src="/static/img/user/Us000001.jpg" alt="Us000001のサムネイル画像" class="img-circle m-r" width="24" height="24">Us000001
+          <img src="/static/img/user/24/{{.Image}}" alt="{{.Id}}のサムネイル画像" class="img-circle m-r" width="24" height="24">{{.Id}}
         </a>
       </button>
-      <button type="button" class="list-group-item">
-        <a href="#" style="color: #333;">
-          <img src="/static/img/user/Us000002.jpg" alt="Us000002のサムネイル画像" class="img-circle m-r" width="24" height="24">Us000002
-        </a>
-      </button>
-      <button type="button" class="list-group-item">
-        <a href="#" style="color: #333;">
-          <img src="/static/img/user/Us000003.jpg" alt="Us000003のサムネイル画像" class="img-circle m-r" width="24" height="24">Us000003
-        </a>
-      </button>
+      {{end}}
+      {{if (len .likeUsers) ge 4}}
       <button type="button" class="list-group-item">
         <div class="text-right">
           <a href="#">もっと見る</a>
         </div>
       </button>
+      {{end}}
     </div>
   </div>
-
+  {{end}}
+  {{if (len .userImages) gt 0}}
   <!-- Users -->
   <div class="users">
     <h5 class="p-a">この商品をおすすめしているユーザー</h5>
     <div class="row p-l p-r m-r-0">
+      {{range .userImages}}
       <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/user/Us000001.jpg" alt="商品Us000001のサムネイル画像" class="img-circle" width="48" height="48">
+        <img src="/static/img/item/48/{{.Image}}" alt="商品{{.Id}}のサムネイル画像" class="img-circle" width="48" height="48">
       </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/user/Us000002.jpg" alt="商品Us000002のサムネイル画像" class="img-circle" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/user/Us000003.jpg" alt="商品Us000003のサムネイル画像" class="img-circle" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/user/Us000004.jpg" alt="商品Us000004のサムネイル画像" class="img-circle" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/user/Us000005.jpg" alt="商品Us000005のサムネイル画像" class="img-circle" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/user/Us000006.jpg" alt="商品Us000006のサムネイル画像" class="img-circle" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/user/Us000007.jpg" alt="商品Us000007のサムネイル画像" class="img-circle" width="48" height="48">
-      </div>
+      {{end}}
     </div>
   </div>
-
+  {{end}}
+  {{if (len .postImages) gt 0}}
   <!-- Reccomended Items -->
   <div class="items">
     <h5 class="p-a">最近投稿されたレビュー</h5>
     <div class="row p-l p-r">
+      {{range .postImages}}
       <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000000.jpg" alt="商品It000000のサムネイル画像" class="img-rounded" width="48" height="48">
+        <img src="/static/img/item/48/{{.Image}}" alt="商品{{.Id}}のサムネイル画像" class="img-rounded" width="48" height="48">
       </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000001.jpg" alt="商品It000001のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000002.jpg" alt="商品It000002のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000003.jpg" alt="商品It000003のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000004.jpg" alt="商品It000004のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000005.jpg" alt="商品It000005のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000006.jpg" alt="商品It000006のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
+      {{end}}
     </div>
   </div>
+  {{end}}
 {{template "footer"}}

@@ -1,5 +1,5 @@
 {{template "header"}}
-<title>商品: It000000のページ</title>
+<title>商品: {{.item.Id}}のページ</title>
 <style>
   .app {
     color: #333;
@@ -56,7 +56,7 @@
     <div class="row p-l p-r m-r-0">
       {{range .users}}
       <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/user/48/{{ .Image}}" alt="商品{{ .Id}}のサムネイル画像" class="img-circle" width="48" height="48">
+        <img src="/static/img/user/48/{{ .Image}}" alt="{{ .Id}}のサムネイル画像" class="img-circle" width="48" height="48">
       </div>
       {{end}}
     </div>
@@ -69,7 +69,7 @@
     <div class="row p-l p-r">
       {{range .postImages}}
       <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/48/{{ .Image}}" alt="商品{{ .Id}}のサムネイル画像" class="img-rounded" width="48" height="48">
+        <img src="/static/img/user/48/{{ .Image}}" alt="{{ .Id}}のサムネイル画像" class="img-rounded" width="48" height="48">
       </div>
       {{end}}
   </div>
