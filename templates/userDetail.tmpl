@@ -1,5 +1,5 @@
 {{template "header"}}
-<title>ユーザー: Us000000のページ</title>
+<title>ユーザー: {{ .user.Id }}のページ</title>
 <style>
   .app {
     color: #333;
@@ -8,14 +8,6 @@
     font-family: 'Raleway', sans-serif;
   }
 </style>
-{{range .friends}}
-<li>{{ .Id}}</li>
-{{ end }}
-
-{{range .items}}
-<li>{{ .Id}}</li>
-{{ end }}
-
 </head>
 <body>
 <div class="app">
@@ -29,7 +21,7 @@
   <ol class="breadcrumb" style="background-color: rgba(1, 1, 1, .05)">
     <li><a href="#">Home</a></li>
     <li><a href="#">Users</a></li>
-    <li class="active">Us000000</li>
+    <li class="active">{{ .user.Id }}</li>
   </ol>
 
   <!-- container -->
@@ -38,11 +30,11 @@
     <!-- User Info -->
     <div class="row p-a-md">
       <div class="text-center col-xs-6">
-        <img src="/static/img/user/Us000000.png" class="img-circle" width="100" height="100" alt="Us000000のサムネイル画像">
+        <img src="/static/img/user/100/{{ .user.Image }}" class="img-circle" width="100" height="100" alt="Us000000のサムネイル画像">
       </div>
       <div class="col-xs-6">
-        <p>Us000000</p>
-        <p>スコア: 87</p>
+        <p>{{ .user.Id }}</p>
+        <p>スコア: {{ .user.PublicScore }}</p>
       </div>
     </div>
     <div class="m-b-md">
@@ -52,84 +44,50 @@
 
   <!-- Friends -->
   <div class="friends">
-    <h5 class="p-a">フレンド <span class="label label-pill label-default">4</span></h5>
+    <h5 class="p-a">フレンド <span class="label label-pill label-default">{{len .friends}}</span></h5>
     <div class="list-group">
+      {{range .friends}}
       <button type="button" class="list-group-item">
         <a href="#" style="color: #333">
-          <img src="/static/img/user/Us000001.jpg" alt="Us000001のサムネイル画像" class="img-circle m-r" width="24" height="24">Us000001
+          <img src="/static/img/user/24/{{ .Image}}" alt="{{ .Id}}" class="img-circle m-r" width="24" height="24">{{ .Id}}
         </a>
       </button>
-      <button type="button" class="list-group-item">
-        <a href="#" style="color: #333">
-          <img src="/static/img/user/Us000002.jpg" alt="Us000002のサムネイル画像" class="img-circle m-r" width="24" height="24">Us000002
-        </a>
-      </button>
-      <button type="button" class="list-group-item">
-        <a href="#" style="color: #333">
-          <img src="/static/img/user/Us000003.jpg" alt="Us000003のサムネイル画像" class="img-circle m-r" width="24" height="24">Us000003
-        </a>
-      </button>
+      {{ end }}
+      {{if (len .friends) ge 4}}
       <button type="button" class="list-group-item">
         <div class="text-right">
           <a href="#">もっと見る</a>
         </div>
       </button>
+      {{end}}
     </div>
   </div>
 
+  {{if (len .items) gt 0}}
   <!-- Reccomended Items -->
   <div class="items">
     <h5 class="p-a">このユーザーのおすすめ商品</h5>
     <div class="row p-l p-r m-r-0">
+      {{range .items}}
       <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000000.jpg" alt="商品It000000のサムネイル画像" class="img-rounded" width="48" height="48">
+        <img src="/static/img/item/48/{{ .Image}}" alt="商品{{ .Id}}のサムネイル画像" class="img-rounded" width="48" height="48">
       </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000001.jpg" alt="商品It000001のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000002.jpg" alt="商品It000002のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000003.jpg" alt="商品It000003のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000004.jpg" alt="商品It000004のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000005.jpg" alt="商品It000005のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000006.jpg" alt="商品It000006のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
+      {{ end }}
     </div>
   </div>
+  {{end}}
 
+  {{if (len .posts) gt 0}}
   <!-- Recent Posts -->
   <div class="posts">
     <h5 class="p-a">最近投稿されたレビュー</h5>
     <div class="row p-l p-r">
+      {{range .posts}}
       <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000000.jpg" alt="商品It000000のサムネイル画像" class="img-rounded" width="48" height="48">
+        <img src="/static/img/item/48/{{ .Image}}" alt="商品{{ .Id}}のサムネイル画像" class="img-rounded" width="48" height="48">
       </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000001.jpg" alt="商品It000001のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000002.jpg" alt="商品It000002のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000003.jpg" alt="商品It000003のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000004.jpg" alt="商品It000004のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000005.jpg" alt="商品It000005のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      <div class="col-xs-3 p-a-0 p-b text-center">
-        <img src="/static/img/item/It000006.jpg" alt="商品It000006のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
+      {{ end }}
     </div>
   </div>
+  {{end}}
 {{template "footer"}}
