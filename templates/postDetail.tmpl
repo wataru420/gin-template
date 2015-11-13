@@ -55,7 +55,7 @@
   <div class="userReview p-t">
     <blockquote class="blockquote">
       <p>この商品、いい感じ。</p>
-      <footer>by <img src="/static/img/user/24/{{.post.UserId}}.png" alt="{{.post.UserId}}のサムネイル画像" class="img-circle" width="24" height="24" style="vertical-align: bottom;"> Us000000</cite></footer>
+      <footer>by <img src="/static/img/user/24/{{.user.Image}}" alt="{{.post.UserId}}のサムネイル画像" class="img-circle" width="24" height="24" style="vertical-align: bottom;"> Us000000</cite></footer>
     </blockquote>
     <!-- review info -->
     <div class="reviewInfo text-muted p-l p-r p-b" style="font-size: 0.8rem;">
@@ -92,11 +92,9 @@
   <div class="users">
     <h5 class="p-a">この商品をおすすめしているユーザー</h5>
     <div class="row p-l p-r m-r-0">
-      {{range .userImages}}
-      <div class="col-xs-3 p-a-0 p-b text-center">
+      {{range .userImages}}<div class="col-xs-3 p-a-0 p-b text-center">
         <img src="/static/img/item/48/{{.Image}}" alt="商品{{.Id}}のサムネイル画像" class="img-circle" width="48" height="48">
-      </div>
-      {{end}}
+      </div>{{end}}
     </div>
   </div>
   {{end}}
@@ -105,11 +103,9 @@
   <div class="items">
     <h5 class="p-a">最近投稿されたレビュー</h5>
     <div class="row p-l p-r">
-      {{range .postImages}}
-      <div class="col-xs-3 p-a-0 p-b text-center">
+      {{range .postImages}}<div class="col-xs-3 p-a-0 p-b text-center">
         <img src="/static/img/item/48/{{.Image}}" alt="商品{{.Id}}のサムネイル画像" class="img-rounded" width="48" height="48">
-      </div>
-      {{end}}
+      </div>{{end}}
     </div>
   </div>
   {{end}}
