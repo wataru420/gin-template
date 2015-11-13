@@ -44,3 +44,8 @@ func (*ItemService) GetWebEndpoint(c *gin.Context)  {
 		"item": item,
 	})
 }
+
+//func (*ItemService) FindByPostUserId(id string, limit int) []Item {
+//	kvar res = []Item{}
+
+//}

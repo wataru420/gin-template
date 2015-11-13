@@ -46,10 +46,17 @@ func (*UserService) GetWebEndpoint(c *gin.Context)  {
 		}
 	}
 
+	items, err := itemDao.FindByPostUserId(id,8)
+	if err != nil {
+		log.Println("error")
+		c.String(http.StatusInternalServerError, err.Error())
+	}
+
 	c.HTML(http.StatusOK, "userDetail.tmpl", gin.H{
 		"title": "Main website",
 		"user": user,
 		"friends": friends,
+		"items": items,
 	})
 }
 

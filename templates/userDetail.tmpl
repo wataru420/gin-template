@@ -1,3 +1,11 @@
 {{template "header"}}
 <h1> {{ .user.Id }}</h1>
+{{range .friends}}
+<li>{{ .Id}}</li>
+{{ end }}
+
+{{range .items}}
+<li>{{ .Id}}</li>
+{{ end }}
+
 {{template "footer"}}
