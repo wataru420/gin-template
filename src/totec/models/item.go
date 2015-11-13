@@ -57,10 +57,10 @@ func (*ItemDao) FindByPostUserId(id string, limit int) ([]Item, error) {
 	return res, err
 }
 
-func (*ItemDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
-	var res = []User{}
+func (*ItemDao) FindByParam(c *gin.Context, limit string) ([]Item, error) {
+	var res = []Item{}
 
-	var query = "SELECT " + allItemColums + " FROM users WHERE 1=1"
+	var query = "SELECT " + allItemColums + " FROM items WHERE 1=1"
 
 	findByItemId := c.Query("findByItemId")
 	if findByItemId != "" {
@@ -116,7 +116,7 @@ func (*ItemDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
 		` + strconv.Itoa(len(strings.Split(findByItemTagsIncludeAny,","))) + ")"
 	}
 
-	query += createScenario2Query(c)
+	query += createScenario2ItemQuery(c)
 
 	query += " limit " + limit
 
@@ -127,18 +127,18 @@ func (*ItemDao) FindByParam(c *gin.Context, limit string) ([]User, error) {
 	}
 
 	for rows.Next() {
-		row := User{}
-		if err := rows.Scan(&row.Id,&row.No,&row.PublicScore,&row.Friends,&row.Image); err != nil {
+		item := Item{}
+		if err := rows.Scan(&item.Id,&item.No,&item.Supplier,&item.SoldQuantity,&item.SalePrice,&item.Tags,&item.Image); err != nil {
 			return res, err
 		}
-		res = append(res, row)
+		res = append(res, item)
 	}
 	return res, err
 }
 
-func createScenario2Query(c *gin.Context) string {
+func createScenario2ItemQuery(c *gin.Context) string {
 	var scenario2 = false
-	var query = " and id IN (SELECT user_id FROM posts WHERE 1=1 "
+	var query = " and id IN (SELECT item_id FROM posts WHERE 1=1 "
 	findByPostId := c.Query("findByPostId")
 	if findByPostId != "" {
 		scenario2 = true

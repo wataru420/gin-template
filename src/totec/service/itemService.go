@@ -58,6 +58,47 @@ func (*ItemService) GetWebEndpoint(c *gin.Context)  {
 	})
 }
 
+
+func (*ItemService) ListEndpoint(c *gin.Context) {
+
+	type resItem struct {
+		Id string	`json:"itemId"`
+		No int		`json:"itemNo"`
+		Supplier string	`json:"itemSoldQuantity"`
+		SoldQuantity int	`json:"itemSoldQuantity"`
+		SalePrice int	`json:"itemSalePrice"`
+		Tags []string	`json:"itemTags"`
+		Image string	`json:"itemImage"`
+	}
+	type res struct {
+		Result bool        `json:"result"`
+		Data   []resItem `json:"data"`
+	}
+	limitParam := c.Query("limit")
+	limit := "100"
+	if limitParam != "" {
+		limit = limitParam
+	}
+
+	itemList, _ := itemDao.FindByParam(c, limit)
+
+	var resItemList = []resItem{}
+	for _, row := range itemList {
+		resItemRow := resItem{}
+		resItemRow.Id = row.Id
+		resItemRow.No = row.No
+		resItemRow.Supplier = row.Supplier
+		resItemRow.SoldQuantity = row.SoldQuantity
+		resItemRow.SalePrice = row.SalePrice
+		resItemRow.Tags = strings.Split(row.Tags,",")
+		resItemRow.Image = row.Image
+		resItemList = append(resItemList, resItemRow)
+	}
+	response := res{true, resItemList}
+	log.Println(response)
+	c.JSON(http.StatusOK, response)
+
+}
 //func (*ItemService) FindByPostUserId(id string, limit int) []Item {
 //	kvar res = []Item{}
 
