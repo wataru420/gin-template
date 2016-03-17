@@ -50,6 +50,21 @@ func (dao *PlayerDao) Get(id string) (Player, error) {
 	return Player{}, err
 }
 
+func (dao *PlayerDao) GetByItemId(id string) (Player, error) {
+	id = "%" + id + "%"
+	rows, err := dbs.Query(`SELECT `+dao.colums()+`
+							FROM `+dao.table()+` where playerItems like ?`, id)
+	defer rows.Close()
+	if err != nil {
+		log.Fatal(err)
+		return Player{}, err
+	}
+	for rows.Next() {
+		return dao.scan(*rows)
+	}
+	return Player{}, err
+}
+
 func (dao *PlayerDao) Update(id string, hp string, mp string, exp string, atk string, def string, int string, agi string, items string, playermap string) error {
 	query := "playerId='" + id + "'"
 	if hp != "" {
