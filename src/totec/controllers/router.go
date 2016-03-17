@@ -40,6 +40,12 @@ func InitRooter(e *gin.Engine) {
 	e.GET("/exploreMap", playerService.ExploreMapEndpoint)
 	e.GET("/hideItem", playerService.HideItemEndpoint)
 	e.GET("/updatePlayerHp", playerService.UpdatePlayerHpEndpoint)
+	e.GET("/updatePlayerMp", playerService.UpdatePlayerMpEndpoint)
+	e.GET("/updatePlayerExp", playerService.UpdatePlayerExpEndpoint)
+	e.GET("/updatePlayerAtk", playerService.UpdatePlayerAtkEndpoint)
+	e.GET("/updatePlayerDef", playerService.UpdatePlayerDefEndpoint)
+	e.GET("/updatePlayerInt", playerService.UpdatePlayerIntEndpoint)
+	e.GET("/updatePlayerAgi", playerService.UpdatePlayerAgiEndpoint)
 
 /*
 	e.GET("/searchUser", userService.ListEndpoint)

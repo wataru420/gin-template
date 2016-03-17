@@ -415,6 +415,131 @@ func (*PlayerService) UpdatePlayerHpEndpoint(c *gin.Context) {
 	returnPlayer(player, c)
 }
 
+func (*PlayerService) UpdatePlayerMpEndpoint(c *gin.Context) {
+
+	id := c.Query("targetPlayerId")
+	value := c.Query("calcValue")
+	calc,_ := strconv.Atoi(value)
+
+	param := playerLogParam{Id: id, Mp: calc}
+	playerLog(id, "updatePlayerMp", param)
+
+	player,_ := playerDao.Get(id)
+	player.Mp += calc
+	if (player.Mp > 255) {
+		player.Mp = 255
+	} else if (player.Mp < 0) {
+		player.Mp = 0
+	}
+	playerDao.UpdateMp(id,player.Mp)
+
+	returnPlayer(player, c)
+}
+
+func (*PlayerService) UpdatePlayerExpEndpoint(c *gin.Context) {
+
+	id := c.Query("targetPlayerId")
+	value := c.Query("calcValue")
+	calc,_ := strconv.Atoi(value)
+
+	param := playerLogParam{Id: id, Exp: calc}
+	playerLog(id, "updatePlayerExp", param)
+
+	player,_ := playerDao.Get(id)
+	player.Exp += calc
+	if (player.Exp > 255) {
+		player.Exp = 255
+	} else if (player.Exp < 0) {
+		player.Exp = 0
+	}
+	playerDao.UpdateExp(id,player.Exp)
+
+	returnPlayer(player, c)
+}
+
+func (*PlayerService) UpdatePlayerAtkEndpoint(c *gin.Context) {
+
+	id := c.Query("targetPlayerId")
+	value := c.Query("calcValue")
+	calc,_ := strconv.Atoi(value)
+
+	param := playerLogParam{Id: id, Atk: calc}
+	playerLog(id, "updatePlayerAtk", param)
+
+	player,_ := playerDao.Get(id)
+	player.Atk += calc
+	if (player.Atk > 255) {
+		player.Atk = 255
+	} else if (player.Atk < 0) {
+		player.Atk = 0
+	}
+	playerDao.UpdateAtk(id,player.Atk)
+
+	returnPlayer(player, c)
+}
+
+func (*PlayerService) UpdatePlayerDefEndpoint(c *gin.Context) {
+
+	id := c.Query("targetPlayerId")
+	value := c.Query("calcValue")
+	calc,_ := strconv.Atoi(value)
+
+	param := playerLogParam{Id: id, Def: calc}
+	playerLog(id, "updatePlayerDef", param)
+
+	player,_ := playerDao.Get(id)
+	player.Def += calc
+	if (player.Def > 255) {
+		player.Def = 255
+	} else if (player.Def < 0) {
+		player.Def = 0
+	}
+	playerDao.UpdateDef(id,player.Def)
+
+	returnPlayer(player, c)
+}
+
+func (*PlayerService) UpdatePlayerIntEndpoint(c *gin.Context) {
+
+	id := c.Query("targetPlayerId")
+	value := c.Query("calcValue")
+	calc,_ := strconv.Atoi(value)
+
+	param := playerLogParam{Id: id, Int: calc}
+	playerLog(id, "updatePlayerInt", param)
+
+	player,_ := playerDao.Get(id)
+	player.Int += calc
+	if (player.Int > 255) {
+		player.Int = 255
+	} else if (player.Int < 0) {
+		player.Int = 0
+	}
+	playerDao.UpdateInt(id,player.Int)
+
+	returnPlayer(player, c)
+}
+
+func (*PlayerService) UpdatePlayerAgiEndpoint(c *gin.Context) {
+
+	id := c.Query("targetPlayerId")
+	value := c.Query("calcValue")
+	calc,_ := strconv.Atoi(value)
+
+	param := playerLogParam{Id: id, Agi: calc}
+	playerLog(id, "updatePlayerAgi", param)
+
+	player,_ := playerDao.Get(id)
+	player.Agi += calc
+	if (player.Agi > 255) {
+		player.Agi = 255
+	} else if (player.Agi < 0) {
+		player.Agi = 0
+	}
+	playerDao.UpdateAgi(id,player.Int)
+
+	returnPlayer(player, c)
+}
 
 func playerLog(id string, path string, param playerLogParam) {
 	bytes, _ := json.Marshal(param)
