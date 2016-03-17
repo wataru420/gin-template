@@ -89,6 +89,12 @@
 			"repository": "https://gopkg.in/bluesuncorp/validator.v5",
 			"revision": "d5acf1dac43705f8bfbb71d878e290e2bed3950b",
 			"branch": "master"
+		},
+		{
+			"importpath": "gopkg.in/go-playground/validator.v5",
+			"repository": "https://gopkg.in/go-playground/validator.v5",
+			"revision": "d5acf1dac43705f8bfbb71d878e290e2bed3950b",
+			"branch": "master"
 		}
 	]
 }

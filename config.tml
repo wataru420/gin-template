@@ -4,15 +4,15 @@ port = 8080
 [database.master]
 host = "localhost"
 port = 3306
-dbname = "octo"
-user = "root"
-password = ""
+dbname = "tquest"
+user = "tqdbuser"
+password = "hoge"
 [database.slave]
 host = "localhost"
 port = 3306
-dbname = "octo"
-user = "root"
-password = ""
+dbname = "tquest"
+user = "tqdbuser"
+password = "hoge"
 
 [redis]
 host = "localhost"
