@@ -58,7 +58,7 @@ func (*MapService) UpdateMapEndpoint(c *gin.Context) {
 		Data   []data `json:"data"`
 	}
 
-	id := c.Query("targetPlayerId")
+	id := c.Query("targetMapId")
 
 	items := c.Query("newMapItems")
 
