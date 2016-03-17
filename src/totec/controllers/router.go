@@ -8,6 +8,7 @@ import (
 )
 
 var infoService = &service.InfoService{}
+var playerService = &service.PlayerService{}
 var userService = &service.UserService{}
 var itemService = &service.ItemService{}
 var postService = &service.PostService{}
@@ -16,6 +17,10 @@ func InitRooter(e *gin.Engine) {
 	e.GET("/status", func(c *gin.Context) {c.String(http.StatusOK, "ok")})
 
 	e.GET("/getInfo", infoService.GetInfoEndpoint)
+
+	e.GET("/readPlayer", playerService.ReadPlayerEndpoint)
+	e.GET("/updatePlayer", playerService.UpdatePlayerEndpoint)
+
 
 	e.GET("/searchUser", userService.ListEndpoint)
 	e.GET("/searchItem", itemService.ListEndpoint)
