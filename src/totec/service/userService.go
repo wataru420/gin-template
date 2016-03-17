@@ -46,31 +46,31 @@ func (*UserService) GetWebEndpoint(c *gin.Context) {
 		friend, _ := userDao.Get(fid)
 		friends = append(friends, friend)
 	}
-
+/*
 	items, err := itemDao.FindByPostUserId(id, 8)
 	if err != nil {
 		log.Println("error")
 		c.String(http.StatusInternalServerError, err.Error())
 	}
-
+*/
 	posts, err := postDao.FindByPostUserId(id, 8)
 	if err != nil {
 		log.Println("error")
 		c.String(http.StatusInternalServerError, err.Error())
 	}
-
 	var postItems = []models.Item{}
+/*
 	for _, post := range posts {
 		item, _ := itemDao.Get(post.ItemId)
 		postItems = append(postItems, item)
 	}
-
+*/
 	c.HTML(http.StatusOK, "userDetail.tmpl", gin.H{
 		"title":        "Main website",
 		"user":         user,
 		"friendsCount": len(friends),
 		"friends":      friends[0:3],
-		"items":        items,
+		//"items":        items,
 		"posts":        posts,
 		"postImages":   postItems,
 	})

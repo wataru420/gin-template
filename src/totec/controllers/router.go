@@ -21,7 +21,7 @@ func InitRooter(e *gin.Engine) {
 	e.GET("/readPlayer", playerService.ReadPlayerEndpoint)
 	e.GET("/updatePlayer", playerService.UpdatePlayerEndpoint)
 
-
+/*
 	e.GET("/searchUser", userService.ListEndpoint)
 	e.GET("/searchItem", itemService.ListEndpoint)
 	e.GET("/searchPost", postService.ListEndpoint)
@@ -29,7 +29,7 @@ func InitRooter(e *gin.Engine) {
 	e.GET("/user/:id", userService.GetWebEndpoint)
 	e.GET("/item/:id", itemService.GetWebEndpoint)
 	e.GET("/post/:id", postService.GetWebEndpoint)
-
+*/
 	e.Static("/static", "./static")
 
 	store := cache.NewInMemoryStore(cache.FOREVER)

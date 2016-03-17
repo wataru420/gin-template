@@ -78,7 +78,7 @@ func (*PostService) GetWebEndpoint(c *gin.Context) {
 		"likeUsers":     likeUsers[0:3],
 		"postImages":    postItems,
 		"userImages":    userItems,
-		"tags":          strings.Split(item.Tags, ","),
+		//"tags":          strings.Split(item.Tags, ","),
 	})
 }
 
