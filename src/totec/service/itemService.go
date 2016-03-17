@@ -18,8 +18,8 @@ func (*ItemService) ReadItemEndpoint(c *gin.Context) {
 		Name  string   `json:"itemName"`
 		Type  string   `json:"itemType"`
 		Value  int   `json:"itemValue"`
-		EffectTarget string   `json:"effectTarget"`
-		EffectValue  int   `json:"EffectValue"`
+		EffectTarget string   `json:"itemEffectTarget"`
+		EffectValue  int   `json:"itemEffectValue"`
 	}
 	type res struct {
 		Result bool   `json:"result"`
@@ -52,8 +52,8 @@ func (*ItemService) UpdateItemEndpoint(c *gin.Context) {
 		Name  string   `json:"itemName"`
 		Type  string   `json:"itemType"`
 		Value  int   `json:"itemValue"`
-		EffectTarget string   `json:"effectTarget"`
-		EffectValue  int   `json:"EffectValue"`
+		EffectTarget string   `json:"itemEffectTarget"`
+		EffectValue  int   `json:"itemEffectValue"`
 	}
 	type res struct {
 		Result bool   `json:"result"`
