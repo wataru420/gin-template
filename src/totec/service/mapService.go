@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"totec/models"
+	"encoding/json"
 )
 
 type MapService struct{}
@@ -22,6 +23,18 @@ func (*MapService) UpdateMapEndpoint(c *gin.Context) {
 	id := c.Query("targetMapId")
 	items := c.Query("newMapItems")
 	mapDao.Update(id, items)
+
+	iparam := itemLogParam{}
+	iparam.MapId = id
+	iparam.MapItems = strings.Split(items,",")
+
+	bytes, _ := json.Marshal(iparam)
+	err := itemLogDao.Insert(id, "switchItemOwner", string(bytes))
+	if err != nil {
+		log.Println(err)
+	}
+
+
 	pmap, _ := mapDao.Get(id)
 
 	returnMap(pmap, c)

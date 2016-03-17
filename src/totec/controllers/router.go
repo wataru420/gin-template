@@ -11,6 +11,8 @@ var infoService = &service.InfoService{}
 var playerService = &service.PlayerService{}
 var mapService = &service.MapService{}
 var itemService = &service.ItemService{}
+var itemLogService = &service.ItemLogService{}
+var playerLogService = &service.PlayerLogService{}
 
 var userService = &service.UserService{}
 var postService = &service.PostService{}
@@ -31,6 +33,8 @@ func InitRooter(e *gin.Engine) {
 	e.GET("/readItem", itemService.ReadItemEndpoint)
 	e.GET("/updateItem", itemService.UpdateItemEndpoint)
 
+	e.GET("/getPlayerLog", playerLogService.GetPlayerLogEndpoint)
+	e.GET("/getItemLog", itemLogService.GetItemLogEndpoint)
 /*
 	e.GET("/searchUser", userService.ListEndpoint)
 	e.GET("/searchItem", itemService.ListEndpoint)

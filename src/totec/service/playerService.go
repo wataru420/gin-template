@@ -1,9 +1,11 @@
 package service
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"totec/models"
 )
@@ -59,17 +61,17 @@ func (*PlayerService) ReadPlayerEndpoint(c *gin.Context) {
 func (*PlayerService) UpdatePlayerEndpoint(c *gin.Context) {
 
 	type data struct {
-		Id    string   `json:"playerId"`
-		Name  string   `json:"playerName"`
-		Hp    int      `json:"playerHp"`
-		Mp    int      `json:"playerMp"`
-		Exp   int      `json:"playerExp"`
-		Atk   int      `json:"playerAtk"`
-		Def   int      `json:"playerDef"`
-		Int   int      `json:"playerInt"`
-		Agi   int      `json:"playerAgi"`
-		Items []string `json:"playerItems"`
-		Map   string   `json:"playerMap"`
+		Id    string   `json:"playerId,omitempty"`
+		Name  string   `json:"playerName,omitempty"`
+		Hp    int      `json:"playerHp,omitempty"`
+		Mp    int      `json:"playerMp,omitempty"`
+		Exp   int      `json:"playerExp,omitempty"`
+		Atk   int      `json:"playerAtk,omitempty"`
+		Def   int      `json:"playerDef,omitempty"`
+		Int   int      `json:"playerInt,omitempty"`
+		Agi   int      `json:"playerAgi,omitempty"`
+		Items []string `json:"playerItems,omitempty"`
+		Map   string   `json:"playerMap,omitempty"`
 	}
 	type res struct {
 		Result bool   `json:"result"`
@@ -89,6 +91,52 @@ func (*PlayerService) UpdatePlayerEndpoint(c *gin.Context) {
 	playermap := c.Query("newPlayerMap")
 
 	playerDao.Update(id, hp, mp, exp, atk, def, int, agi, items, playermap)
+
+	param := playerLogParam{}
+	iparam := itemLogParam{}
+	param.Id = id
+	if hp != "" {
+		param.Hp, _ = strconv.Atoi(hp)
+		iparam.Hp, _ = strconv.Atoi(hp)
+	}
+	if mp != "" {
+		param.Mp, _ = strconv.Atoi(mp)
+		iparam.Mp, _ = strconv.Atoi(mp)
+	}
+	if exp != "" {
+		param.Exp, _ = strconv.Atoi(exp)
+		iparam.Exp, _ = strconv.Atoi(exp)
+	}
+	if atk != "" {
+		param.Atk, _ = strconv.Atoi(atk)
+		iparam.Atk, _ = strconv.Atoi(atk)
+	}
+	if def != "" {
+		param.Def, _ = strconv.Atoi(def)
+		iparam.Def, _ = strconv.Atoi(def)
+	}
+	if int != "" {
+		param.Int, _ = strconv.Atoi(int)
+		iparam.Int, _ = strconv.Atoi(int)
+	}
+	if agi != "" {
+		param.Agi, _ = strconv.Atoi(agi)
+		iparam.Agi, _ = strconv.Atoi(agi)
+	}
+	if items != "" {
+		param.Items = strings.Split(items, ",")
+		iparam.Items = strings.Split(items, ",")
+	}
+	if playermap != "" {
+		param.Map = playermap
+		iparam.Map = playermap
+	}
+	bytes, _ := json.Marshal(param)
+	playerLogDao.Insert(id, "updatePlayer", string(bytes))
+
+
+	bytes, _ = json.Marshal(iparam)
+	itemLogDao.Insert(id, "updatePlayer", string(bytes))
 
 	player, _ := playerDao.Get(id)
 
@@ -158,6 +206,14 @@ func (*PlayerService) SwitchItemOwnerEndpoint(c *gin.Context) {
 	id := c.Query("targetItemId")
 	owner := c.Query("newItemOwner")
 
+	param := playerLogParam{}
+	param.ItemId = id
+	param.ItemOwner = owner
+
+	bytes, _ := json.Marshal(param)
+	playerLogDao.Insert(id, "switchItemOwner", string(bytes))
+
+
 	player, _ := playerDao.GetByItemId(id)
 	pmap, _ := mapDao.GetByItemId(id)
 	if (pmap != models.Map{}) {
@@ -169,6 +225,16 @@ func (*PlayerService) SwitchItemOwnerEndpoint(c *gin.Context) {
 		items := strings.Split(player.Items, ",")
 		items = remove(items, id)
 		playerDao.UpdateItems(id, strings.Join(items, ","))
+	}
+
+	iparam := itemLogParam{}
+	iparam.ItemId = id
+	iparam.ItemOwner = owner
+
+	bytes, _ = json.Marshal(iparam)
+	err := itemLogDao.Insert(id, "switchItemOwner", string(bytes))
+	if err != nil {
+		log.Println(err)
 	}
 
 	if owner == "none" {
@@ -183,7 +249,7 @@ func (*PlayerService) SwitchItemOwnerEndpoint(c *gin.Context) {
 		response := res{true, list}
 		log.Println(response)
 		c.JSON(http.StatusOK, response)
-	} else if (strings.Index(owner, "Us") == 0) {
+	} else if strings.Index(owner, "Us") == 0 {
 		log.Println("User:" + owner)
 		player, _ := playerDao.Get(owner)
 		itemsString := player.Items
