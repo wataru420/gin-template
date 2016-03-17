@@ -11,7 +11,7 @@ type ItemService struct{}
 
 var itemDao = &models.ItemDao{}
 
-func (*ItemService) ReadMapEndpoint(c *gin.Context) {
+func (*ItemService) ReadItemEndpoint(c *gin.Context) {
 
 	type data struct {
 		Id    string   `json:"itemId"`
@@ -45,7 +45,7 @@ func (*ItemService) ReadMapEndpoint(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (*ItemService) UpdateMapEndpoint(c *gin.Context) {
+func (*ItemService) UpdateItemEndpoint(c *gin.Context) {
 
 	type data struct {
 		Id    string   `json:"itemId"`
