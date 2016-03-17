@@ -183,19 +183,29 @@ func (*PlayerService) SwitchItemOwnerEndpoint(c *gin.Context) {
 		response := res{true, list}
 		log.Println(response)
 		c.JSON(http.StatusOK, response)
-	} else if strings.Index(owner, "Us") == 0 {
+	} else if (strings.Index(owner, "Us") == 0) {
+		log.Println("User:" + id)
 		player, _ := playerDao.Get(id)
-		items := strings.Split(player.Items, ",")
-		items = append(items, id)
-		playerDao.UpdateItems(id, strings.Join(items, ","))
-		player.Items = strings.Join(items, ",")
+		itemsString := player.Items
+		if player.Items != "" {
+			items := strings.Split(player.Items, ",")
+			items = append(items, id)
+			itemsString = strings.Join(items, ",")
+		}
+		playerDao.UpdateItems(id, itemsString)
+		player.Items = itemsString
 		returnPlayer(player, c)
 	} else {
+		log.Println("Map:" + id)
 		pmap, _ := mapDao.Get(id)
-		items := strings.Split(pmap.Items, ",")
-		items = append(items, id)
-		mapDao.Update(id, strings.Join(items, ","))
-		pmap.Items = strings.Join(items, ",")
+		itemsString := pmap.Items
+		if pmap.Items != "" {
+			items := strings.Split(pmap.Items, ",")
+			items = append(items, id)
+			itemsString = strings.Join(items, ",")
+		}
+		mapDao.Update(id, itemsString)
+		pmap.Items = itemsString
 		returnMap(pmap, c)
 	}
 
@@ -249,4 +259,3 @@ func remove(strings []string, search string) []string {
 	}
 	return result
 }
-
