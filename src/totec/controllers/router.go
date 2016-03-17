@@ -9,8 +9,10 @@ import (
 
 var infoService = &service.InfoService{}
 var playerService = &service.PlayerService{}
-var userService = &service.UserService{}
+var mapService = &service.MapService{}
 var itemService = &service.ItemService{}
+
+var userService = &service.UserService{}
 var postService = &service.PostService{}
 
 func InitRooter(e *gin.Engine) {
@@ -20,6 +22,12 @@ func InitRooter(e *gin.Engine) {
 
 	e.GET("/readPlayer", playerService.ReadPlayerEndpoint)
 	e.GET("/updatePlayer", playerService.UpdatePlayerEndpoint)
+
+	e.GET("/readMap", mapService.ReadMapEndpoint)
+	e.GET("/updateMap", mapService.UpdateMapEndpoint)
+
+	e.GET("/readItem", itemService.ReadItemEndpoint)
+	e.GET("/updateItem", itemService.UpdateItemEndpoint)
 
 /*
 	e.GET("/searchUser", userService.ListEndpoint)
