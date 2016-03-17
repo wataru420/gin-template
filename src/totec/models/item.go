@@ -47,7 +47,7 @@ func (dao *ItemDao) Get(id string) (Item, error) {
 func (dao *ItemDao) Update(id string, value string) error {
 	query :="itemId='" + id + "'"
 	if value != "" {
-		query += ",itemValue='"+value + "'"
+		query += ",itemValue="+value
 	}
 
 	log.Println(query)
