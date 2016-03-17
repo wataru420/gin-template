@@ -184,27 +184,27 @@ func (*PlayerService) SwitchItemOwnerEndpoint(c *gin.Context) {
 		log.Println(response)
 		c.JSON(http.StatusOK, response)
 	} else if (strings.Index(owner, "Us") == 0) {
-		log.Println("User:" + id)
-		player, _ := playerDao.Get(id)
+		log.Println("User:" + owner)
+		player, _ := playerDao.Get(owner)
 		itemsString := player.Items
 		if player.Items != "" {
 			items := strings.Split(player.Items, ",")
 			items = append(items, id)
 			itemsString = strings.Join(items, ",")
 		}
-		playerDao.UpdateItems(id, itemsString)
+		playerDao.UpdateItems(owner, itemsString)
 		player.Items = itemsString
 		returnPlayer(player, c)
 	} else {
-		log.Println("Map:" + id)
-		pmap, _ := mapDao.Get(id)
+		log.Println("Map:" + owner)
+		pmap, _ := mapDao.Get(owner)
 		itemsString := pmap.Items
 		if pmap.Items != "" {
 			items := strings.Split(pmap.Items, ",")
 			items = append(items, id)
 			itemsString = strings.Join(items, ",")
 		}
-		mapDao.Update(id, itemsString)
+		mapDao.Update(owner, itemsString)
 		pmap.Items = itemsString
 		returnMap(pmap, c)
 	}
