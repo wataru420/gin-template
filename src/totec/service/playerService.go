@@ -1,41 +1,40 @@
 package service
+
 import (
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"github.com/gin-gonic/gin"
-	"totec/models"
 	"strings"
+	"totec/models"
 )
 
-
-type PlayerService struct {}
+type PlayerService struct{}
 
 var playerDao = &models.PlayerDao{}
 
-func (*PlayerService) ReadPlayerEndpoint(c *gin.Context)  {
+func (*PlayerService) ReadPlayerEndpoint(c *gin.Context) {
 
 	type data struct {
-		Id string	`json:"playerId"`
-		Name string	`json:"playerName"`
-		Hp int	`json:"playerHp"`
-		Mp int	`json:"playerMp"`
-		Exp int	`json:"playerExp"`
-		Atk int	`json:"playerAtk"`
-		Def int	`json:"playerDef"`
-		Int int	`json:"playerInt"`
-		Agi int	`json:"playerAgi"`
-		Items []string	`json:"playerItems"`
-		Map string	`json:"playerMap"`
+		Id    string   `json:"playerId"`
+		Name  string   `json:"playerName"`
+		Hp    int      `json:"playerHp"`
+		Mp    int      `json:"playerMp"`
+		Exp   int      `json:"playerExp"`
+		Atk   int      `json:"playerAtk"`
+		Def   int      `json:"playerDef"`
+		Int   int      `json:"playerInt"`
+		Agi   int      `json:"playerAgi"`
+		Items []string `json:"playerItems"`
+		Map   string   `json:"playerMap"`
 	}
 	type res struct {
-		Result bool        `json:"result"`
+		Result bool   `json:"result"`
 		Data   []data `json:"data"`
 	}
 
-
 	id := c.Query("targetPlayerId")
 
-	player,_ := playerDao.Get(id)
+	player, _ := playerDao.Get(id)
 
 	var list = []data{}
 	row := data{}
@@ -48,7 +47,7 @@ func (*PlayerService) ReadPlayerEndpoint(c *gin.Context)  {
 	row.Def = player.Def
 	row.Int = player.Int
 	row.Agi = player.Agi
-	row.Items = strings.Split(player.Items,",")
+	row.Items = strings.Split(player.Items, ",")
 	row.Map = player.Map
 	list = append(list, row)
 
@@ -57,27 +56,25 @@ func (*PlayerService) ReadPlayerEndpoint(c *gin.Context)  {
 	c.JSON(http.StatusOK, response)
 }
 
-
-func (*PlayerService) UpdatePlayerEndpoint(c *gin.Context)  {
+func (*PlayerService) UpdatePlayerEndpoint(c *gin.Context) {
 
 	type data struct {
-		Id string	`json:"playerId"`
-		Name string	`json:"playerName"`
-		Hp int	`json:"playerHp"`
-		Mp int	`json:"playerMp"`
-		Exp int	`json:"playerExp"`
-		Atk int	`json:"playerAtk"`
-		Def int	`json:"playerDef"`
-		Int int	`json:"playerInt"`
-		Agi int	`json:"playerAgi"`
-		Items []string	`json:"playerItems"`
-		Map string	`json:"playerMap"`
+		Id    string   `json:"playerId"`
+		Name  string   `json:"playerName"`
+		Hp    int      `json:"playerHp"`
+		Mp    int      `json:"playerMp"`
+		Exp   int      `json:"playerExp"`
+		Atk   int      `json:"playerAtk"`
+		Def   int      `json:"playerDef"`
+		Int   int      `json:"playerInt"`
+		Agi   int      `json:"playerAgi"`
+		Items []string `json:"playerItems"`
+		Map   string   `json:"playerMap"`
 	}
 	type res struct {
-		Result bool        `json:"result"`
+		Result bool   `json:"result"`
 		Data   []data `json:"data"`
 	}
-
 
 	id := c.Query("targetPlayerId")
 
@@ -91,9 +88,9 @@ func (*PlayerService) UpdatePlayerEndpoint(c *gin.Context)  {
 	items := c.Query("newPlayerItems")
 	playermap := c.Query("newPlayerMap")
 
-	playerDao.Update(id,hp,mp,exp,atk,def,int,agi,items,playermap)
+	playerDao.Update(id, hp, mp, exp, atk, def, int, agi, items, playermap)
 
-	player,_ := playerDao.Get(id)
+	player, _ := playerDao.Get(id)
 
 	var list = []data{}
 	row := data{}
@@ -106,7 +103,7 @@ func (*PlayerService) UpdatePlayerEndpoint(c *gin.Context)  {
 	row.Def = player.Def
 	row.Int = player.Int
 	row.Agi = player.Agi
-	row.Items = strings.Split(player.Items,",")
+	row.Items = strings.Split(player.Items, ",")
 	row.Map = player.Map
 	list = append(list, row)
 
@@ -114,29 +111,114 @@ func (*PlayerService) UpdatePlayerEndpoint(c *gin.Context)  {
 	log.Println(response)
 	c.JSON(http.StatusOK, response)
 }
-func (*PlayerService) FindItemOwnerEndpoint(c *gin.Context) {
-	type data struct {
-		Id string	`json:"playerId"`
-		Name string	`json:"playerName"`
-		Hp int	`json:"playerHp"`
-		Mp int	`json:"playerMp"`
-		Exp int	`json:"playerExp"`
-		Atk int	`json:"playerAtk"`
-		Def int	`json:"playerDef"`
-		Int int	`json:"playerInt"`
-		Agi int	`json:"playerAgi"`
-		Items []string	`json:"playerItems"`
-		Map string	`json:"playerMap"`
-	}
-	type res struct {
-		Result bool        `json:"result"`
-		Data   []data `json:"data"`
-	}
 
+func (*PlayerService) FindItemOwnerEndpoint(c *gin.Context) {
 
 	id := c.Query("targetItemId")
 
-	player,_ := playerDao.GetByItemId(id)
+	player, _ := playerDao.GetByItemId(id)
+
+	if (player == models.Player{}) {
+
+		type data struct {
+			Id    string   `json:"mapId"`
+			Name  string   `json:"mapName"`
+			Type  string   `json:"mapType"`
+			Next  []string `json:"mapNext"`
+			Items []string `json:"mapItems"`
+		}
+		type res struct {
+			Result bool   `json:"result"`
+			Data   []data `json:"data"`
+		}
+
+		pmap, _ := mapDao.GetByItemId(id)
+
+		var list = []data{}
+		row := data{}
+		row.Id = pmap.Id
+		row.Name = pmap.Name
+		row.Type = pmap.Type
+		row.Next = strings.Split(pmap.Next, ",")
+		row.Items = strings.Split(pmap.Items, ",")
+		list = append(list, row)
+
+		response := res{true, list}
+		log.Println(response)
+		c.JSON(http.StatusOK, response)
+
+	} else {
+		returnPlayer(player, c)
+	}
+
+}
+
+func (*PlayerService) SwitchItemOwnerEndpoint(c *gin.Context) {
+
+	id := c.Query("targetItemId")
+	owner := c.Query("newItemOwner")
+
+	player, _ := playerDao.GetByItemId(id)
+	pmap, _ := mapDao.GetByItemId(id)
+	if (pmap != models.Map{}) {
+		items := strings.Split(pmap.Items, ",")
+		items = remove(items, id)
+		mapDao.Update(id, strings.Join(items, ","))
+	}
+	if (player != models.Player{}) {
+		items := strings.Split(player.Items, ",")
+		items = remove(items, id)
+		playerDao.UpdateItems(id, strings.Join(items, ","))
+	}
+
+	if owner == "none" {
+		type data struct {
+		}
+		type res struct {
+			Result bool   `json:"result"`
+			Data   []data `json:"data"`
+		}
+
+		var list = []data{}
+		response := res{true, list}
+		log.Println(response)
+		c.JSON(http.StatusOK, response)
+	} else if strings.Index(owner, "Us") == 0 {
+		player, _ := playerDao.Get(id)
+		items := strings.Split(player.Items, ",")
+		items = append(items, id)
+		playerDao.UpdateItems(id, strings.Join(items, ","))
+		player.Items = strings.Join(items, ",")
+		returnPlayer(player, c)
+	} else {
+		pmap, _ := mapDao.Get(id)
+		items := strings.Split(pmap.Items, ",")
+		items = append(items, id)
+		mapDao.Update(id, strings.Join(items, ","))
+		pmap.Items = strings.Join(items, ",")
+		returnMap(pmap, c)
+	}
+
+}
+
+func returnPlayer(player models.Player, c *gin.Context) {
+	type data struct {
+		Id    string   `json:"playerId"`
+		Name  string   `json:"playerName"`
+		Hp    int      `json:"playerHp"`
+		Mp    int      `json:"playerMp"`
+		Exp   int      `json:"playerExp"`
+		Atk   int      `json:"playerAtk"`
+		Def   int      `json:"playerDef"`
+		Int   int      `json:"playerInt"`
+		Agi   int      `json:"playerAgi"`
+		Items []string `json:"playerItems"`
+		Map   string   `json:"playerMap"`
+	}
+	type res struct {
+		Result bool   `json:"result"`
+		Data   []data `json:"data"`
+	}
 
 	var list = []data{}
 	row := data{}
@@ -149,7 +231,7 @@ func (*PlayerService) FindItemOwnerEndpoint(c *gin.Context) {
 	row.Def = player.Def
 	row.Int = player.Int
 	row.Agi = player.Agi
-	row.Items = strings.Split(player.Items,",")
+	row.Items = strings.Split(player.Items, ",")
 	row.Map = player.Map
 	list = append(list, row)
 
@@ -157,3 +239,14 @@ func (*PlayerService) FindItemOwnerEndpoint(c *gin.Context) {
 	log.Println(response)
 	c.JSON(http.StatusOK, response)
 }
+
+func remove(strings []string, search string) []string {
+	result := []string{}
+	for _, str := range strings {
+		if str != search {
+			result = append(result, str)
+		}
+	}
+	return result
+}
+

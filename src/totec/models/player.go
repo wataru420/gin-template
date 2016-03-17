@@ -102,3 +102,14 @@ func (dao *PlayerDao) Update(id string, hp string, mp string, exp string, atk st
 		id)
 	return err
 }
+
+func (dao *PlayerDao) UpdateItems(id string, items string) error {
+	query :=  "playerItems='" + items + "'"
+
+	log.Println(query)
+	_, err := dbm.Exec(`UPDATE `+dao.table()+` SET
+						`+query+`
+						WHERE playerId=?`,
+		id)
+	return err
+}

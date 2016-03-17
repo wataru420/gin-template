@@ -56,3 +56,18 @@ func (dao *MapDao) Update(id string, items string) error {
 		id)
 	return err
 }
+
+func (dao *MapDao) GetByItemId(id string) (Map, error) {
+	id = "%" + id + "%"
+	rows, err := dbs.Query(`SELECT `+dao.colums()+`
+							FROM `+dao.table()+` where mapItems like ?`, id)
+	defer rows.Close()
+	if err != nil {
+		log.Fatal(err)
+		return Map{}, err
+	}
+	for rows.Next() {
+		return dao.scan(*rows)
+	}
+	return Map{}, err
+}
