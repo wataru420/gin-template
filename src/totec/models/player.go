@@ -113,3 +113,50 @@ func (dao *PlayerDao) UpdateItems(id string, items string) error {
 		id)
 	return err
 }
+
+func (dao *PlayerDao) UpdateMap(id string, mapId string) error {
+	query :=  "playerMap='" + mapId + "'"
+
+	log.Println(query)
+	_, err := dbm.Exec(`UPDATE `+dao.table()+` SET
+						`+query+`
+						WHERE playerId=?`,
+		id)
+	return err
+}
+
+func (dao *PlayerDao) UpdateHp(id string, hp int) error {
+	_, err := dbm.Exec(`UPDATE `+dao.table()+` SET playerHp=? WHERE playerId=?`,hp,id)
+	return err
+}
+
+func (dao *PlayerDao) UpdateMp(id string, val int) error {
+	_, err := dbm.Exec(`UPDATE `+dao.table()+` SET playerMp=? WHERE playerId=?`,val,id)
+	return err
+}
+
+func (dao *PlayerDao) UpdateExp(id string, val int) error {
+	_, err := dbm.Exec(`UPDATE `+dao.table()+` SET playerExp=? WHERE playerId=?`,val,id)
+	return err
+}
+
+func (dao *PlayerDao) UpdateAtk(id string, val int) error {
+	_, err := dbm.Exec(`UPDATE `+dao.table()+` SET playerAtk=? WHERE playerId=?`,val,id)
+	return err
+}
+
+func (dao *PlayerDao) UpdateDef(id string, val int) error {
+	_, err := dbm.Exec(`UPDATE `+dao.table()+` SET playerDef=? WHERE playerId=?`,val,id)
+	return err
+}
+
+func (dao *PlayerDao) UpdateInt(id string, val int) error {
+	_, err := dbm.Exec(`UPDATE `+dao.table()+` SET playerInt=? WHERE playerId=?`,val,id)
+	return err
+}
+
+func (dao *PlayerDao) UpdateAgi(id string, val int) error {
+	_, err := dbm.Exec(`UPDATE `+dao.table()+` SET playerAgi=? WHERE playerId=?`,val,id)
+	return err
+}
+

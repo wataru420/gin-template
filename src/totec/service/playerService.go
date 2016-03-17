@@ -134,7 +134,6 @@ func (*PlayerService) UpdatePlayerEndpoint(c *gin.Context) {
 	bytes, _ := json.Marshal(param)
 	playerLogDao.Insert(id, "updatePlayer", string(bytes))
 
-
 	bytes, _ = json.Marshal(iparam)
 	itemLogDao.Insert(id, "updatePlayer", string(bytes))
 
@@ -213,7 +212,6 @@ func (*PlayerService) SwitchItemOwnerEndpoint(c *gin.Context) {
 	bytes, _ := json.Marshal(param)
 	playerLogDao.Insert(id, "switchItemOwner", string(bytes))
 
-
 	player, _ := playerDao.GetByItemId(id)
 	pmap, _ := mapDao.GetByItemId(id)
 	if (pmap != models.Map{}) {
@@ -274,6 +272,158 @@ func (*PlayerService) SwitchItemOwnerEndpoint(c *gin.Context) {
 		pmap.Items = itemsString
 		returnMap(pmap, c)
 	}
+
+}
+
+func (*PlayerService) MovePlayerEndpoint(c *gin.Context) {
+
+	id := c.Query("targetPlayerId")
+	mapId := c.Query("newPlayerMap")
+
+	param := playerLogParam{Id: id, Map: mapId}
+	playerLog(id, "movePlayer", param)
+
+	player,_ := playerDao.Get(id)
+
+	if player.Map == mapId {
+		returnPlayer(player, c)
+	} else {
+		pmap,_ := mapDao.Get(id)
+		if pmap.Next == mapId {
+			playerDao.UpdateMap(id, mapId)
+			player.Map = mapId
+			returnPlayer(player, c)
+		} else {
+			type res struct {
+				Result bool   `json:"result"`
+			}
+			response := res{Result: false}
+			log.Println(response)
+			c.JSON(http.StatusOK, response)
+		}
+	}
+}
+
+func (*PlayerService) ExploreMapEndpoint(c *gin.Context) {
+	id := c.Query("targetPlayerId")
+
+	player,_ := playerDao.Get(id)
+	pmap,_ := mapDao.Get(player.Map)
+
+	param := playerLogParam{Id: id}
+	playerLog(id, "exploreMap", param)
+
+	//TODO itemlog
+
+	if pmap.Items == "" {
+		type res struct {
+			Result bool   `json:"result"`
+		}
+		response := res{Result: false}
+		log.Println(response)
+		c.JSON(http.StatusOK, response)
+	} else {
+		getItems := strings.Split(pmap.Items, ",")
+		for _, itemId := range getItems {
+			item,_ := itemDao.Get(itemId)
+			newValue := item.Value - 10
+			if newValue < 0 {
+				newValue = 0
+			}
+			itemDao.Update(itemId, strconv.Itoa(newValue))
+		}
+		if player.Items == "" {
+			playerDao.UpdateItems(id, pmap.Items)
+			mapDao.Update(player.Map, "")
+			player.Items = pmap.Items
+		} else {
+			gotItems := strings.Split(player.Items, ",")
+			gotItems = append(gotItems, getItems...)
+			playerDao.UpdateItems(id, strings.Join(gotItems, ","))
+			mapDao.Update(player.Map, "")
+			player.Items = strings.Join(gotItems, ",")
+		}
+		returnPlayer(player, c)
+	}
+}
+
+func (*PlayerService) HideItemEndpoint(c *gin.Context) {
+	id := c.Query("targetPlayerId")
+
+	player,_ := playerDao.Get(id)
+	pmap,_ := mapDao.Get(player.Map)
+
+	param := playerLogParam{Id: id}
+	playerLog(id, "hideItem", param)
+
+	if player.Items == "" {
+		type res struct {
+			Result bool   `json:"result"`
+		}
+
+		response := res{Result: false}
+		log.Println(response)
+		c.JSON(http.StatusOK, response)
+	} else {
+		pItems := strings.Split(player.Items, ",")
+		hideItemId := pItems[1]
+
+		param := itemLogParam{ItemId: hideItemId}
+		itemLog(hideItemId, "hideItem", param)
+
+		item,_ := itemDao.Get(hideItemId)
+		newUserItems := strings.Join(remove(pItems, hideItemId), ",")
+		newValue := item.Value + 10
+		if newValue > 65535 {
+			newValue = 65535
+		}
+		itemDao.Update(hideItemId, strconv.Itoa(newValue))
+		if pmap.Items == "" {
+			mapDao.Update(player.Map, hideItemId)
+			playerDao.UpdateItems(id, newUserItems)
+			player.Items = newUserItems
+		} else {
+			gotItems := strings.Split(pmap.Items, ",")
+			gotItems = append(gotItems, hideItemId)
+			mapDao.Update(player.Map, strings.Join(gotItems, ","))
+			playerDao.UpdateItems(id, newUserItems)
+			player.Items = newUserItems
+		}
+		returnPlayer(player, c)
+	}
+}
+
+
+func (*PlayerService) UpdatePlayerHpEndpoint(c *gin.Context) {
+
+	id := c.Query("targetPlayerId")
+	value := c.Query("calcValue")
+	calc,_ := strconv.Atoi(value)
+
+	param := playerLogParam{Id: id, Hp: calc}
+	playerLog(id, "updatePlayerHp", param)
+
+	player,_ := playerDao.Get(id)
+	player.Hp += calc
+	if (player.Hp > 255) {
+		player.Hp = 255
+	} else if (player.Hp < 0) {
+		player.Hp = 0
+	}
+	playerDao.UpdateHp(id,player.Hp)
+
+	returnPlayer(player, c)
+}
+
+
+func playerLog(id string, path string, param playerLogParam) {
+	bytes, _ := json.Marshal(param)
+	playerLogDao.Insert(id, path, string(bytes))
+}
+
+func itemLog(id string, path string, param itemLogParam) {
+	bytes, _ := json.Marshal(param)
+	itemLogDao.Insert(id, path, string(bytes))
 
 }
 
