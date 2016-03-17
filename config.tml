@@ -1,0 +1,19 @@
+[api]
+port = 8080
+
+[database.master]
+host = "localhost"
+port = 3306
+dbname = "octo"
+user = "root"
+password = ""
+[database.slave]
+host = "localhost"
+port = 3306
+dbname = "octo"
+user = "root"
+password = ""
+
+[redis]
+host = "localhost"
+port = 6379

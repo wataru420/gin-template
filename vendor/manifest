@@ -2,6 +2,19 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "github.com/BurntSushi/toml",
+			"repository": "https://github.com/BurntSushi/toml",
+			"revision": "a4eecd407cf4129fc902ece859a0114e4cf1a7f4",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/bradfitz/gomemcache/memcache",
+			"repository": "https://github.com/bradfitz/gomemcache",
+			"revision": "fb1f79c6b65acda83063cbc69f6bba1522558bfc",
+			"branch": "master",
+			"path": "/memcache"
+		},
+		{
 			"importpath": "github.com/dustin/go-broadcast",
 			"repository": "https://github.com/dustin/go-broadcast",
 			"revision": "3bdf6d4a7164a50bc19d5f230e2981d87d2584f1",
@@ -20,6 +33,13 @@
 			"revision": "6ece6e0a09f28cc399b21550cbf37ab39ba63cce",
 			"branch": "master",
 			"path": "/redis"
+		},
+		{
+			"importpath": "github.com/gin-gonic/contrib/cache",
+			"repository": "https://github.com/gin-gonic/contrib",
+			"revision": "14f66d54cdb96059bafca98665bcc6d9df4951f2",
+			"branch": "master",
+			"path": "/cache"
 		},
 		{
 			"importpath": "github.com/gin-gonic/gin",
@@ -49,6 +69,12 @@
 			"importpath": "github.com/mattn/go-colorable",
 			"repository": "https://github.com/mattn/go-colorable",
 			"revision": "40e4aedc8fabf8c23e040057540867186712faa5",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/robfig/go-cache",
+			"repository": "https://github.com/robfig/go-cache",
+			"revision": "9fc39e0dbf62c034ec4e45e6120fc69433a3ec51",
 			"branch": "master"
 		},
 		{

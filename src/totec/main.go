@@ -1,30 +1,57 @@
 package main
 
 import (
+	"fmt"
 	"flag"
 	"github.com/gin-gonic/gin"
+	"github.com/BurntSushi/toml"
 
 	"totec/controllers"
 	"totec/models"
 )
 
+type Config struct {
+	Api         ApiConfig         `toml:"api"`
+	Database    DatabaseConfig    `toml:"database"`
+	Redis       RedisConfig       `toml:"redis"`
+}
+
+type DatabaseConfig struct {
+	Master DatabaseServerConfig `toml:"master"`
+	Slave  DatabaseServerConfig `toml:"slave"`
+}
+
+type DatabaseServerConfig struct {
+	Host     string `toml:"host"`
+	Port     int    `toml:"port"`
+	Dbname   string `toml:"dbname"`
+	User     string `toml:"user"`
+	Password string `toml:"password"`
+}
+
+type RedisConfig struct {
+	Host     string `toml:"host"`
+	Port     int    `toml:"port"`
+}
+
+type ApiConfig struct {
+	Port int `toml:port`
+}
+
+var Conf Config
+
 func main() {
 
 	var (
-		apiBind                = flag.String("api-bind", ":8080", "Address to bind on")
-		databaseMasterHost     = flag.String("database-master-host", "localhost", "Database master host")
-		databaseMasterPort     = flag.Int("database-master-port", 3306, "Database master port")
-		databaseMasterDbname   = flag.String("database-master-dbname", "totec", "Database master db name")
-		databaseMasterUser     = flag.String("database-master-user", "root", "Database master username")
-		databaseMasterPassword = flag.String("database-master-password", "", "Database master password")
-		databaseSlaveHost      = flag.String("database-slave-host", "localhost", "Database slave host")
-		databaseSlavePort      = flag.Int("database-slave-port", 3306, "Database slave port")
-		databaseSlaveDbname    = flag.String("database-slave-dbname", "totec", "Database slave db name")
-		databaseSlaveUser      = flag.String("database-slave-user", "root", "Database slave username")
-		databaseSlavePassword  = flag.String("database-slave-password", "", "Database slave password")
-		redisHost		       = flag.String("redis-host", "localhost", "Redis host")
-		redisPort		       = flag.Int("reids-port", 6379, "Redis port")
+		confFile = flag.String("conf", "config.tml", "config toml file")
 	)
+
+	flag.Parse()
+
+	_, err := toml.DecodeFile(*confFile, &Conf)
+	if err != nil {
+		panic(err)
+	}
 
 	flag.Parse()
 
@@ -35,20 +62,20 @@ func main() {
 	controllers.InitRooter(router)
 
 	if err := models.Setup(&models.Config{
-		DatabaseMasterHost:     *databaseMasterHost,
-		DatabaseMasterPort:     *databaseMasterPort,
-		DatabaseMasterDbname:   *databaseMasterDbname,
-		DatabaseMasterUser:     *databaseMasterUser,
-		DatabaseMasterPassword: *databaseMasterPassword,
-		DatabaseSlaveHost:      *databaseSlaveHost,
-		DatabaseSlavePort:      *databaseSlavePort,
-		DatabaseSlaveDbname:    *databaseSlaveDbname,
-		DatabaseSlaveUser:      *databaseSlaveUser,
-		DatabaseSlavePassword:  *databaseSlavePassword,
-		RedisHost:      		*redisHost,
-		RedisPort:      		*redisPort,	}); err != nil {
+		DatabaseMasterHost:     Conf.Database.Master.Host,
+		DatabaseMasterPort:     Conf.Database.Master.Port,
+		DatabaseMasterDbname:   Conf.Database.Master.Dbname,
+		DatabaseMasterUser:     Conf.Database.Master.User,
+		DatabaseMasterPassword: Conf.Database.Master.Password,
+		DatabaseSlaveHost:      Conf.Database.Slave.Host,
+		DatabaseSlavePort:      Conf.Database.Slave.Port,
+		DatabaseSlaveDbname:    Conf.Database.Slave.Dbname,
+		DatabaseSlaveUser:      Conf.Database.Slave.User,
+		DatabaseSlavePassword:  Conf.Database.Slave.Password,
+		RedisHost:      		Conf.Redis.Host,
+		RedisPort:      		Conf.Redis.Port,	}); err != nil {
 		panic(err)
 	}
 
-	router.Run(*apiBind)
+	router.Run(fmt.Sprintf(":%d", Conf.Api.Port))
 }

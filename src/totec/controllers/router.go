@@ -1,8 +1,10 @@
 package controllers
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/contrib/cache"
 	"net/http"
 	"totec/service"
+	"strconv"
 )
 
 var userService = &service.UserService{}
@@ -21,6 +23,16 @@ func InitRooter(e *gin.Engine) {
 	e.GET("/post/:id", postService.GetWebEndpoint)
 
 	e.Static("/static", "./static")
+
+	store := cache.NewInMemoryStore(cache.FOREVER)
+
+	e.GET("/countup", func(c *gin.Context) {
+		count := 0
+		store.Get("count", &count)
+		count += 1
+		store.Set("count", count ,cache.DEFAULT)
+		c.String(http.StatusOK, strconv.Itoa(count))
+	})
 //
 //	json := e.Group("/json")
 //	{
